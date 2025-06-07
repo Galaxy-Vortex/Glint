@@ -14,6 +14,7 @@
   <script src="js/main.js" defer></script>
   <script src="js/search.js" defer></script>
   <script src="js/proxy-config.js" defer></script>
+  <script src="js/options.js" defer></script>
   <script src="js/register-sw.js" defer></script>
   <!-- Proxy dependencies - loading order matters -->
   <script src="baremux/index.js" defer></script>
@@ -105,12 +106,64 @@
           </div>
 
           <div class="footer">
-            <p>Made with ☕ by the Glint team</p>
+            <p>Maintained by Griffin, Owned by 🌌Galaxy Network🌌</p>
           </div>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Browser Options -->
+  <div class="options-menu" id="options-menu">
+    <div class="options-header">
+      <h2>Browser Settings</h2>
+      <button class="close-options"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="options-content">
+      <div class="options-section">
+        <h3>Search Engine</h3>
+        <div class="search-engine-selector">
+          <div class="search-engine-option">
+            <input type="radio" id="search-google" name="search-engine" value="google" checked>
+            <label for="search-google">Google</label>
+          </div>
+          <div class="search-engine-option">
+            <input type="radio" id="search-bing" name="search-engine" value="bing">
+            <label for="search-bing">Bing</label>
+          </div>
+          <div class="search-engine-option">
+            <input type="radio" id="search-duckduckgo" name="search-engine" value="duckduckgo">
+            <label for="search-duckduckgo">DuckDuckGo</label>
+          </div>
+          <div class="search-engine-option">
+            <input type="radio" id="search-yahoo" name="search-engine" value="yahoo">
+            <label for="search-yahoo">Yahoo</label>
+          </div>
+          <div class="search-engine-option custom-search">
+            <input type="radio" id="search-custom" name="search-engine" value="custom">
+            <label for="search-custom">Custom</label>
+            <input type="text" id="custom-search-url" placeholder="https://example.com/search?q=%s">
+          </div>
+        </div>
+      </div>
+      
+      <div class="options-section">
+        <h3>Browsing Mode</h3>
+        <div class="browsing-mode-options">
+          <button id="about-blank-button" class="mode-button">
+            <i class="fas fa-mask"></i>
+            <span>Cloak with about:blank</span>
+          </button>
+          <p class="option-help">Opens the current page in an iframe within about:blank to hide the actual URL</p>
+        </div>
+      </div>
+    </div>
+    <div class="options-footer">
+      <button class="save-options">Save Settings</button>
+    </div>
+  </div>
+  <div id="options-overlay" class="overlay hidden"></div>
+  
   <div id="loading-overlay" class="hidden">
     <div class="spinner"></div>
     <p>Loading...</p>

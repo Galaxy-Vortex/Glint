@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
   const tabsContainer = document.querySelector(".tabs");
   const newTabButton = document.querySelector(".new-tab-btn");
@@ -294,22 +292,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const handleSearch = async (searchTerm, tabId) => {
     if (!searchTerm || !tabId) return;
 
+    const settings = window.glintSettings || {};
+    const currentEngine = settings.searchEngine || 'google';
+    const searchEngines = settings.searchEngines || {
+      google: 'https://www.google.com/search?q=%s',
+      blank: 'about:blank'
+    };
+    
     let url = searchTerm;
-    if (
-      !searchTerm.startsWith("http://") &&
-      !searchTerm.startsWith("https://")
-    ) {
+    
+    if (!searchTerm.startsWith("http://") && !searchTerm.startsWith("https://")) {
       if (searchTerm.includes(".") && !searchTerm.includes(" ")) {
         url = `https://${searchTerm}`;
-      } else {
-        url = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+      } 
+      else if (currentEngine === 'blank') {
+        url = 'about:blank';
+      }
+      else {
+        const engineUrl = searchEngines[currentEngine] || searchEngines.google;
+        url = engineUrl.replace('%s', encodeURIComponent(searchTerm));
       }
     }
 
+    navigateTo(url, tabId);
+  };
+  
+  const navigateTo = (url, tabId) => {
     tabs[tabId].url = url;
-    tabs[tabId].title = searchTerm.length > 20
-      ? searchTerm.substring(0, 20) + '...'
-      : searchTerm;
+    tabs[tabId].title = url.length > 20
+      ? url.substring(0, 20) + '...'
+      : url;
     tabs[tabId].isNewTab = false;
 
     const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
@@ -402,7 +414,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document
     .querySelector(".menu-btn")
-    ?.addEventListener("click", () => alert("Browser options"));
+    ?.addEventListener("click", () => {
+    });
 
   updateTabDividers();
 });

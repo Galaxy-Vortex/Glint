@@ -1,10 +1,11 @@
 # Glint ⭐
-
+![image](https://github.com/user-attachments/assets/67338216-903d-4cdb-8130-9a4595a53940)
 ~Browse the internet with no restrictions
 
 ## About Glint📑
 
 Galaxy is a minimalistic open source proxy that is capable of evading internet censorship. Galaxy uses Chemical.JS, which is harder to detect and fast. It also contains a vast collection of games that will continuously expand as the site grows. Join [Galaxy Network]([https://discord.gg/xM8FvSAttG](https://discord.gg/jMsj6KJBSV)) for more links!
+
 
 
 ## Demo 🏴󠁺󠁡󠁦󠁳󠁿

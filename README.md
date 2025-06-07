@@ -1,7 +1,7 @@
 # Glint ✨
 
 <div align="center">
-<img src="./assets/page.png" alt="Glint Logo" />
+  <img src="./public/images/page.png" alt="Glint Logo" width="1000"">
 </div>
 
 ## 🌐 Live Demo

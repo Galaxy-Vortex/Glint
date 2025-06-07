@@ -10,7 +10,7 @@ Galaxy is a minimalistic open source proxy that is capable of evading internet c
 
 ## Demo 🏴󠁺󠁡󠁦󠁳󠁿
 
-#### (no link)
+#### https://social-sync.org
 
 ## Run Glint Locally 🚀
 

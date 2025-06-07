@@ -1,43 +1,45 @@
-# Glint ⭐
-![image](https://github.com/user-attachments/assets/67338216-903d-4cdb-8130-9a4595a53940)
-~Browse the internet with no restrictions
+# Glint ✨
 
-## About Glint📑
+<div align="center">
+<img src="./assets/page.png" alt="Glint Logo" />
+</div>
 
-Galaxy is a minimalistic open source proxy that is capable of evading internet censorship. Galaxy uses Chemical.JS, which is harder to detect and fast. It also contains a vast collection of games that will continuously expand as the site grows. Join [Galaxy Network]([https://discord.gg/xM8FvSAttG](https://discord.gg/jMsj6KJBSV)) for more links!
+## 🌐 Live Demo
 
+Try Glint now: [https://social-sync.org](https://social-sync.org)
 
+## 🚀 Getting Started
 
-## Demo 🏴󠁺󠁡󠁦󠁳󠁿
+### Prerequisites
+- Node.js
+- npm
 
-#### https://social-sync.org
+### Installation
 
-## Run Glint Locally 🚀
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Galaxy-Vortex/Glint
+   ```
 
-##### Install Galaxy
-```bash
-git clone https://github.com/Galaxy-Vortex/Glint
-```
+2. Install dependencies:
+   ```bash
+   npm i
+   ```
 
+3. Start the server:
+   ```bash
+   npm start
+   ```
 
-<br>
+### Configuration
+The default port for Glint is `3000`. You can access it by visiting `localhost:3000` in your web browser.
 
-##### Install dependencies
+> **Note:** If port 3000 is already in use, you can change the port in the `app.js` file.
 
-```bash
-npm i  
-```
+## 🔗 Connect
 
-##### Start
+Join the [Galaxy Network](https://discord.gg/jMsj6KJBSV) for additional links and updates!
 
-```bash
-npm start
-```
-#### NOTE: The dafault port for Glint is 3000. You can visit it by typing localhost:3000/ into a web browser. Editing the port inside app.js, will change the port. Please do this if you run into an issue that says your port is closed/busy.
-<br>
-    
+## ⚠️ Development Status
 
-## A look inside👀
-<span style="color:rgb(212, 65, 65)"> Note: Glint is still under development and have many more updates to come </span>
-<br>
-
+**Note:** Glint is still under active development with many more updates planned.

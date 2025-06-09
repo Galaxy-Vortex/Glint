@@ -37,7 +37,7 @@ The default port for Glint is `3000`. You can access it by visiting `localhost:3
 
 ## 🔗 Connect
 
-Join the [Galaxy Network](https://discord.gg/jMsj6KJBSV) for additional links and updates!
+Join the [Hydra Network](https://discord.gg/jMsj6KJBSV) for additional links and updates!
 
 ## ⚠️ Development Status
 

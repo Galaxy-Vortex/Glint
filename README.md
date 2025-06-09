@@ -6,8 +6,7 @@
 
 ## 🌐 Live Demo
 
-Try Glint now: [https://social-sync.org](https://social-sync.org)
-
+Try Glint now: https://glintapp.org/
 ## 🚀 Getting Started
 
 ### Prerequisites

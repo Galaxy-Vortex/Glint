@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+
   const tabsContainer = document.querySelector(".tabs");
   const newTabButton = document.querySelector(".new-tab-btn");
   const addressBarInput = document.querySelector(".address-bar-input");
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       baremuxConnection = new BareMux.BareMuxConnection("/baremux/worker.js");
       let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-      
+
       if (await baremuxConnection.getTransport() !== "/epoxy/index.mjs") {
         await baremuxConnection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
       }
@@ -60,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const swRegistered = await registerSW();
       const baremuxInitialized = await initBaremux();
-      
+
       if (!swRegistered || !baremuxInitialized) {
         console.warn('Proxy initialization incomplete - some features may not work');
       }
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     frame.id = `proxy-frame-${tabId}`;
     frame.className = 'proxy-frame';
     frame.style.display = 'none';
-    frame.style.border = 'none'; 
+    frame.style.border = 'none';
     frame.style.width = '100%';
     frame.style.height = '100%';
     proxyFramesContainer.appendChild(frame);
@@ -83,6 +84,15 @@ document.addEventListener("DOMContentLoaded", () => {
     frame.onload = () => {
       frame.classList.remove('loading');
       updateTabFavicon(tabId, frame);
+
+      try {
+        const frameWindow = frame.contentWindow;
+        if (frameWindow) {
+          const currentURL = frameWindow.location.href;
+          updateAddressBar(currentURL, tabId);
+        }
+      } catch (e) {
+      }
     };
 
     return frame;
@@ -298,13 +308,13 @@ document.addEventListener("DOMContentLoaded", () => {
       google: 'https://www.google.com/search?q=%s',
       blank: 'about:blank'
     };
-    
+
     let url = searchTerm;
-    
+
     if (!searchTerm.startsWith("http://") && !searchTerm.startsWith("https://")) {
       if (searchTerm.includes(".") && !searchTerm.includes(" ")) {
         url = `https://${searchTerm}`;
-      } 
+      }
       else if (currentEngine === 'blank') {
         url = 'about:blank';
       }
@@ -316,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     navigateTo(url, tabId);
   };
-  
+
   const navigateTo = (url, tabId) => {
     tabs[tabId].url = url;
     tabs[tabId].title = url.length > 20
@@ -345,11 +355,23 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       proxyFrame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-
       addressBarInput.value = url;
+
+      proxyFrame.onload = () => {
+        proxyFrame.classList.remove('loading');
+        updateTabFavicon(tabId, proxyFrame);
+
+        try {
+          const frameWindow = proxyFrame.contentWindow;
+          if (frameWindow) {
+            const currentURL = frameWindow.location.href;
+            updateAddressBar(currentURL, tabId);
+          }
+        } catch (e) {
+        }
+      };
     } catch (err) {
       console.error('Error loading proxied content:', err);
-      alert('Failed to load the requested page. Please try again.');
       proxyFrame.classList.remove('loading');
     }
   };
@@ -401,16 +423,25 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!tabs[activeTabId].isNewTab) {
         const proxyFrame = document.getElementById(`proxy-frame-${activeTabId}`);
         if (proxyFrame && proxyFrame.contentWindow) {
+          proxyFrame.classList.add('loading');
+
+          const originalOnload = proxyFrame.onload;
+          proxyFrame.onload = () => {
+            proxyFrame.classList.remove('loading');
+
+            monitorIframeNavigation(proxyFrame, activeTabId);
+
+            if (originalOnload) {
+              originalOnload();
+            }
+          };
+
           proxyFrame.contentWindow.location.reload();
         }
       } else {
         window.location.reload();
       }
     });
-
-  document
-    .querySelector(".star-btn")
-    ?.addEventListener("click", () => alert("Bookmark added"));
 
   document
     .querySelector(".menu-btn")
@@ -431,4 +462,31 @@ function updateTabDividers() {
       tab.after(divider);
     }
   });
+}
+
+function updateAddressBar(url, tabId) {
+  try {
+    let displayUrl = url;
+    const prefix = __uv$config.prefix;
+
+    if (displayUrl.startsWith(location.origin + prefix)) {
+      displayUrl = __uv$config.decodeUrl(
+        displayUrl.substring(location.origin.length + prefix.length)
+      );
+
+      tabs[tabId].url = displayUrl;
+      tabs[tabId].title = displayUrl.length > 20
+        ? displayUrl.substring(0, 20) + '...'
+        : displayUrl;
+
+      const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
+      if (tabTitle) {
+        tabTitle.textContent = tabs[tabId].title;
+      }
+
+      addressBarInput.value = displayUrl;
+    }
+  } catch (e) {
+    console.error("Error updating address bar:", e);
+  }
 }

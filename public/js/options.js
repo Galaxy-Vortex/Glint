@@ -24,15 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
   closeOptionsBtn.addEventListener('click', closeOptionsMenu);
   optionsOverlay.addEventListener('click', closeOptionsMenu);
   saveOptionsBtn.addEventListener('click', saveSettings);
-  
+
   aboutBlankBtn.addEventListener('click', openAboutBlankCloak);
-  
+
   customSearchRadio.addEventListener('change', () => {
     if (customSearchRadio.checked) {
       customSearchInput.focus();
     }
   });
-  
+
   customSearchInput.addEventListener('focus', () => {
     customSearchRadio.checked = true;
   });
@@ -46,30 +46,30 @@ document.addEventListener('DOMContentLoaded', () => {
     optionsMenu.style.display = 'none';
     optionsOverlay.classList.add('hidden');
   }
-  
+
   function openAboutBlankCloak() {
     try {
       const currentTab = getCurrentTab();
       const currentUrl = currentTab ? currentTab.url : window.location.href;
-      
+
       const win = window.open('about:blank', '_blank');
-      
+
       if (!win || win.closed) {
         showNotification('Popup blocked. Please allow popups and try again.', 'error');
         return;
       }
-      
+
       setTimeout(() => {
         try {
           let urlToLoad = currentUrl;
           if (window.proxyUtils && window.proxyUtils.encodeURL) {
             urlToLoad = window.proxyUtils.encodeURL(currentUrl);
           }
-          
+
           win.document.body.style.margin = '0';
           win.document.body.style.padding = '0';
           win.document.body.style.overflow = 'hidden';
-          
+
           const iframe = win.document.createElement('iframe');
           iframe.style.width = '100vw';
           iframe.style.height = '100vh';
@@ -78,25 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
           iframe.style.top = '0';
           iframe.style.left = '0';
           iframe.src = urlToLoad;
-          
+
           win.document.body.appendChild(iframe);
-          
+
           win.document.title = 'about:blank';
-          
+
           showNotification('Successfully opened in about:blank cloak');
         } catch (err) {
           console.error('Error setting up about:blank iframe:', err);
           showNotification('Error setting up about:blank iframe', 'error');
         }
       }, 100);
-      
+
       closeOptionsMenu();
     } catch (err) {
       console.error('Error opening about:blank:', err);
       showNotification('Failed to open in about:blank. Check popup settings.', 'error');
     }
   }
-  
+
   function getCurrentTab() {
     if (window.activeTabId && window.tabs && window.tabs[window.activeTabId]) {
       return window.tabs[window.activeTabId];
@@ -107,29 +107,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadSettings() {
     const savedSearchEngine = localStorage.getItem('glint_search_engine') || 'google';
     const customSearchUrl = localStorage.getItem('glint_custom_search_url') || '';
-    
+
     customSearchInput.value = customSearchUrl;
-    
+
     searchEngines.custom = customSearchUrl;
-    
+
     const radioToCheck = document.getElementById(`search-${savedSearchEngine}`);
     if (radioToCheck) {
       radioToCheck.checked = true;
     }
-    
+
     updateGlobalSearchSettings();
   }
 
   function saveSettings() {
     let selectedEngine = 'google';
-    
+
     for (const radio of searchEngineRadios) {
       if (radio.checked) {
         selectedEngine = radio.value;
         break;
       }
     }
-    
+
     if (selectedEngine === 'custom') {
       const customUrl = customSearchInput.value.trim();
       if (customUrl) {
@@ -139,13 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedEngine = 'google';
       }
     }
-    
+
     localStorage.setItem('glint_search_engine', selectedEngine);
-    
+
     updateGlobalSearchSettings();
-    
+
     closeOptionsMenu();
-    
+
     showNotification('Settings saved successfully');
   }
 
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.glintSettings = window.glintSettings || {};
     window.glintSettings.searchEngine = localStorage.getItem('glint_search_engine') || 'google';
     window.glintSettings.searchEngines = searchEngines;
-    
+
     window.dispatchEvent(new CustomEvent('glint:settings-updated'));
   }
 
@@ -162,9 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
     notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => notification.classList.add('show'), 10);
-    
+
     setTimeout(() => {
       notification.classList.remove('show');
       setTimeout(() => notification.remove(), 300);

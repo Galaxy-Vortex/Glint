@@ -366,18 +366,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (frameWindow) {
             const currentURL = frameWindow.location.href;
             updateAddressBar(currentURL, tabId);
-            
-            const decodedUrl = currentURL.startsWith(location.origin + __uv$config.prefix) 
-              ? __uv$config.decodeUrl(currentURL.substring(location.origin.length + __uv$config.prefix.length))
-              : currentURL;
-              
-            window.dispatchEvent(new CustomEvent('add-to-history', {
-              detail: {
-                url: decodedUrl,
-                title: tabs[tabId].title,
-                favicon: tabs[tabId].favicon
-              }
-            }));
           }
         } catch (e) {
         }
@@ -459,13 +447,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector(".menu-btn")
     ?.addEventListener("click", () => {
     });
-
-  window.addEventListener('navigate-to-url', (event) => {
-    const { url } = event.detail;
-    if (url) {
-      handleSearch(url, activeTabId);
-    }
-  });
 
   updateTabDividers();
 });

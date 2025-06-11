@@ -23,7 +23,6 @@
   <script src="js/search.js" defer></script>
   <script src="js/proxy-config.js" defer></script>
   <script src="js/options.js" defer></script>
-  <script src="js/history.js" defer></script>
   <script src="js/register-sw.js" defer></script>
   <!-- Proxy dependencies - loading order matters -->
   <script src="baremux/index.js" defer></script>
@@ -59,7 +58,6 @@
         <input type="text" class="address-bar-input" placeholder="Search or enter a URL">
       </div>
       <div class="toolbar-actions">
-        <button class="action-btn history-btn" aria-label="Browsing history"><i class="fas fa-history"></i></button>
         <button class="action-btn menu-btn" aria-label="More options"><i class="fas fa-ellipsis-v"></i></button>
       </div>
     </div>
@@ -174,20 +172,6 @@
   </div>
   <div id="options-overlay" class="overlay hidden"></div>
 
-  <!-- History stuff -->
-  <div class="history-menu" id="history-menu">
-    <div class="history-header">
-      <h2>Browsing History</h2>
-      <div class="history-header-actions">
-        <button class="clear-history-btn"><i class="fas fa-trash"></i> Clear History</button>
-        <button class="close-history"><i class="fas fa-times"></i></button>
-      </div>
-    </div>
-    <div class="history-content">
-      <div class="history-list" id="history-list">
-      </div>
-    </div>
-  </div>
 
 </body>
 

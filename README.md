@@ -43,3 +43,4 @@ Join the [Hydra Network](https://discord.gg/jMsj6KJBSV) for additional links and
 
 **Note:** Glint is still under active development with many more updates planned.
 :-3
+:)))

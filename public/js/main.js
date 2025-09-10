@@ -109,37 +109,78 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const url = new URL(tabs[tabId].url);
-      const defaultFaviconUrl = `${url.protocol}//${url.hostname}/favicon.ico`;
-      checkFaviconExists(defaultFaviconUrl, (exists) => {
-        if (exists) {
-          setTabFavicon(tabId, defaultFaviconUrl);
-        } else {
-          setTabFaviconPlaceholder(tabId, url.hostname.charAt(0).toUpperCase());
-        }
-      });
+      tryFaviconFallbacks(tabId);
     } catch (err) {
       console.log('Could not access favicon due to cross-origin restrictions');
-      try {
-        const url = new URL(tabs[tabId].url);
-        const domainFavicon = `${url.protocol}//${url.hostname}/favicon.ico`;
-        checkFaviconExists(domainFavicon, (exists) => {
-          if (exists) {
-            setTabFavicon(tabId, domainFavicon);
-          } else {
-            setTabFaviconPlaceholder(tabId, url.hostname.charAt(0).toUpperCase());
-          }
-        });
-      } catch (err) {
-        console.error('Error setting favicon placeholder:', err);
-      }
+      tryFaviconFallbacks(tabId);
     }
+  }
+
+  function tryFaviconFallbacks(tabId) {
+    try {
+      const url = new URL(tabs[tabId].url);
+      const hostname = url.hostname;
+      
+      const faviconSources = [
+        `${url.protocol}//${hostname}/favicon.ico`,
+        `${url.protocol}//${hostname}/favicon.png`,
+        `${url.protocol}//${hostname}/apple-touch-icon.png`,
+        `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`,
+        `https://icons.duckduckgo.com/ip3/${hostname}.ico`,
+        `https://www.google.com/s2/favicons?domain=${hostname}`
+      ];
+
+      tryFaviconSource(tabId, faviconSources, 0, hostname);
+    } catch (err) {
+      console.error('Error setting favicon placeholder:', err);
+      setTabFaviconPlaceholder(tabId, '🌐');
+    }
+  }
+
+  function tryFaviconSource(tabId, sources, index, hostname) {
+    if (index >= sources.length) {
+      const letter = hostname.charAt(0).toUpperCase();
+      setTabFaviconPlaceholder(tabId, letter);
+      return;
+    }
+
+    const faviconUrl = sources[index];
+    checkFaviconExists(faviconUrl, (exists) => {
+      if (exists) {
+        setTabFavicon(tabId, faviconUrl);
+      } else {
+        tryFaviconSource(tabId, sources, index + 1, hostname);
+      }
+    });
   }
 
   function checkFaviconExists(url, callback) {
     const img = new Image();
-    img.onload = () => callback(true);
-    img.onerror = () => callback(false);
+    let loaded = false;
+    
+    const timeout = setTimeout(() => {
+      if (!loaded) {
+        loaded = true;
+        callback(false);
+      }
+    }, 3000);
+    
+    img.onload = () => {
+      if (!loaded) {
+        loaded = true;
+        clearTimeout(timeout);
+        callback(true);
+      }
+    };
+    
+    img.onerror = () => {
+      if (!loaded) {
+        loaded = true;
+        clearTimeout(timeout);
+        callback(false);
+      }
+    };
+    
     img.src = url;
   }
 
@@ -156,6 +197,14 @@ document.addEventListener("DOMContentLoaded", () => {
         favicon.className = 'tab-favicon';
         tab.insertBefore(favicon, tab.firstChild);
       }
+      
+      favicon.onerror = () => {
+        console.log(`Failed to load favicon: ${faviconUrl}`);
+        favicon.remove();
+        const url = new URL(tabs[tabId].url);
+        setTabFaviconPlaceholder(tabId, url.hostname.charAt(0).toUpperCase());
+      };
+      
       favicon.src = faviconUrl;
     }
   }
@@ -337,6 +386,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
     if (tabTitle) {
       tabTitle.textContent = tabs[tabId].title;
+    }
+
+    try {
+      const urlObj = new URL(url);
+      const hostname = urlObj.hostname;
+      
+      setTabFaviconPlaceholder(tabId, '⏳');
+      
+      const quickFavicon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+      checkFaviconExists(quickFavicon, (exists) => {
+        if (exists) {
+          setTabFavicon(tabId, quickFavicon);
+        } else {
+          setTabFaviconPlaceholder(tabId, hostname.charAt(0).toUpperCase());
+        }
+      });
+    } catch (err) {
+      console.log('Error preloading favicon:', err);
     }
 
     const proxyFrame = document.getElementById(`proxy-frame-${tabId}`);

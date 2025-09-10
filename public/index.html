@@ -17,6 +17,9 @@
   <meta name="twitter:description" content="A custom web proxy to bypass restrictions">
   <meta name="twitter:image" content="https://glintapp.org/images/page.png">
   <title>Glint Browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="js/main.js" defer></script>
@@ -62,7 +65,6 @@
       </div>
     </div>
     <div class="browser-content">
-      <!-- Main content - new tab page -->
       <div class="new-tab-page">
         <div class="new-tab-container">
           <div class="hero-section">
@@ -87,7 +89,7 @@
               </div>
               <div class="feature-content">
                 <h3>Private Browsing</h3>
-                <p>Your activity stays completely private - I built this with zero logging and no data collection</p>
+                <p>Your activity stays completely private</p>
               </div>
             </div>
 
@@ -107,7 +109,7 @@
               </div>
               <div class="feature-content">
                 <h3>Bypass Restrictions</h3>
-                <p>Access blocked content with my custom implementation of the Ultraviolet proxy</p>
+                <p>Access blocked content</p>
               </div>
             </div>
           </div>
@@ -121,56 +123,34 @@
     </div>
   </div>
 
-  <!-- Browser Options -->
-  <div class="options-menu" id="options-menu">
-    <div class="options-header">
-      <h2>Browser Settings</h2>
-      <button class="close-options"><i class="fas fa-times"></i></button>
+  <div class="options-dropdown" id="options-dropdown">
+    <div class="dropdown-section-header">
+      <i class="fas fa-search"></i>
+      <span>Search Engine</span>
     </div>
-    <div class="options-content">
-      <div class="options-section">
-        <h3>Search Engine</h3>
-        <div class="search-engine-selector">
-          <div class="search-engine-option">
-            <input type="radio" id="search-google" name="search-engine" value="google" checked>
-            <label for="search-google">Google</label>
-          </div>
-          <div class="search-engine-option">
-            <input type="radio" id="search-bing" name="search-engine" value="bing">
-            <label for="search-bing">Bing</label>
-          </div>
-          <div class="search-engine-option">
-            <input type="radio" id="search-duckduckgo" name="search-engine" value="duckduckgo">
-            <label for="search-duckduckgo">DuckDuckGo</label>
-          </div>
-          <div class="search-engine-option">
-            <input type="radio" id="search-yahoo" name="search-engine" value="yahoo">
-            <label for="search-yahoo">Yahoo</label>
-          </div>
-          <div class="search-engine-option custom-search">
-            <input type="radio" id="search-custom" name="search-engine" value="custom">
-            <label for="search-custom">Custom</label>
-            <input type="text" id="custom-search-url" placeholder="https://example.com/search?q=%s">
-          </div>
+    <div class="dropdown-section">
+      <div class="search-engine-options">
+        <div class="dropdown-item search-option" data-engine="google">
+          <input type="radio" id="dropdown-google" name="dropdown-search-engine" value="google">
+          <label for="dropdown-google">Google</label>
         </div>
-      </div>
-
-      <div class="options-section">
-        <h3>Browsing Mode</h3>
-        <div class="browsing-mode-options">
-          <button id="about-blank-button" class="mode-button">
-            <i class="fas fa-mask"></i>
-            <span>Cloak with about:blank</span>
-          </button>
-          <p class="option-help">Opens the current page in an iframe within about:blank to hide the actual URL</p>
+        <div class="dropdown-item search-option" data-engine="bing">
+          <input type="radio" id="dropdown-bing" name="dropdown-search-engine" value="bing">
+          <label for="dropdown-bing">Bing</label>
+        </div>
+        <div class="dropdown-item search-option" data-engine="duckduckgo">
+          <input type="radio" id="dropdown-duckduckgo" name="dropdown-search-engine" value="duckduckgo">
+          <label for="dropdown-duckduckgo">DuckDuckGo</label>
+        </div>
+        <div class="dropdown-item search-option" data-engine="yahoo">
+          <input type="radio" id="dropdown-yahoo" name="dropdown-search-engine" value="yahoo">
+          <label for="dropdown-yahoo">Yahoo</label>
         </div>
       </div>
     </div>
-    <div class="options-footer">
-      <button class="save-options">Save Settings</button>
-    </div>
+    
+    
   </div>
-  <div id="options-overlay" class="overlay hidden"></div>
 
 
 </body>

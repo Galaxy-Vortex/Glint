@@ -8,8 +8,6 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 // UV and proxy dependencies
-import { publicPath } from "ultraviolet-static";
-import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 
@@ -59,26 +57,6 @@ fastify.get("/", (req, reply) => {
 	return reply.sendFile("index.html", publicDir);
 });
 
-// Serve Ultraviolet static files - these are required for the proxy frontend
-fastify.register(fastifyStatic, {
-	root: publicPath,
-	decorateReply: false,
-	prefix: "/uv-static/",
-	index: false,
-});
-
-// Special route for UV config
-// We need this separate route because it's frequently accessed by the client
-fastify.get("/uv/uv.config.js", (req, res) => {
-	return res.sendFile("uv/uv.config.js", publicPath);
-});
-
-// UV client scripts
-fastify.register(fastifyStatic, {
-	root: uvPath,
-	prefix: "/uv/",
-	decorateReply: false,
-});
 
 // Epoxy transport (encrypted proxy data)
 fastify.register(fastifyStatic, {

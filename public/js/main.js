@@ -31,9 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function registerSW() {
     try {
-      await navigator.serviceWorker.register('/uv/sw.js', {
-        scope: __uv$config.prefix
-      });
+      await navigator.serviceWorker.register('/sw.js', {});
       return true;
     } catch (err) {
       console.error('Failed to register service worker:', err);

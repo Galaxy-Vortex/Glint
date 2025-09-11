@@ -22,9 +22,7 @@ async function initUVServiceWorker() {
       throw new Error('Service workers are not supported in this browser.');
     }
 
-    await navigator.serviceWorker.register('/uv/sw.js', {
-      scope: __uv$config.prefix
-    });
+    await navigator.serviceWorker.register('/sw.js', {});
 
     console.log('UV service worker registered successfully');
     return true;

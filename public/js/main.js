@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			all: "/scram/scramjet.all.js",
 			sync: "/scram/scramjet.sync.js",
 		},
+		prefix: "/scramjet/",
 		flags: {
 			rewriterLogs: false,
 			scramitize: false,
@@ -68,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function initBaremux() {
     try {
       baremuxConnection = new BareMux.BareMuxConnection("/baremux/worker.js");
-      let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+      let wispUrl = localStorage.getItem("glint_wisp") || (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
 
       if (await baremuxConnection.getTransport() !== "/epoxy/index.mjs") {
         await baremuxConnection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
@@ -538,6 +539,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     ?.addEventListener("click", () => {
     });
 
+	document.addEventListener("glint:settings-updated", initBaremux)
+
   updateTabDividers();
 });
 
@@ -558,9 +561,9 @@ function updateAddressBar(url, tabId) {
   try {
     let displayUrl = url;
 
-    if (displayUrl.startsWith(location.origin + prefix)) {
+    if (displayUrl.startsWith(location.origin + "/scramjet/")) {
 			displayUrl = decodeURIComponent(
-        displayUrl.substring(location.origin.length + prefix.length)
+        displayUrl.substring(location.origin.length + "/scramjet/".length)
 			);
 
 

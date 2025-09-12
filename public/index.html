@@ -30,8 +30,7 @@
   <!-- Proxy dependencies - loading order matters -->
   <script src="baremux/index.js" defer></script>
   <script src="epoxy/index.js" defer></script>
-  <script src="uv/uv.bundle.js" defer></script>
-  <script src="uv/uv.config.js" defer></script>
+	<script src="scram/scramjet.all.js" defer></script>
 </head>
 
 <body>
@@ -147,9 +146,20 @@
           <label for="dropdown-yahoo">Yahoo</label>
         </div>
       </div>
+		</div>
+
+    <div class="dropdown-section-header">
+      <i class="fas fa-server"></i>
+			<span>Proxy</span>
     </div>
-    
-    
+
+    <div class="dropdown-section">
+			<label for="input-wisp">
+				 Wisp:
+			</label>
+			<input type="text" id="input-wisp" name="input-wisp"/>
+		</div>
+
   </div>
 
 

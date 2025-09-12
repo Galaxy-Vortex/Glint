@@ -25,7 +25,8 @@
   <script src="js/main.js" defer></script>
   <script src="js/search.js" defer></script>
   <script src="js/proxy-config.js" defer></script>
-  <script src="js/options.js" defer></script>
+  <script src="js/settings.js" defer></script>
+  <!-- <script src="js/options.js" defer></script> -->
   <script src="js/register-sw.js" defer></script>
   <!-- Proxy dependencies - loading order matters -->
   <script src="baremux/index.js" defer></script>
@@ -122,34 +123,7 @@
     </div>
   </div>
 
-  <div class="options-dropdown" id="options-dropdown">
-    <div class="dropdown-section-header">
-      <i class="fas fa-search"></i>
-      <span>Search Engine</span>
-    </div>
-    <div class="dropdown-section">
-      <div class="search-engine-options">
-        <div class="dropdown-item search-option" data-engine="google">
-          <input type="radio" id="dropdown-google" name="dropdown-search-engine" value="google">
-          <label for="dropdown-google">Google</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="bing">
-          <input type="radio" id="dropdown-bing" name="dropdown-search-engine" value="bing">
-          <label for="dropdown-bing">Bing</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="duckduckgo">
-          <input type="radio" id="dropdown-duckduckgo" name="dropdown-search-engine" value="duckduckgo">
-          <label for="dropdown-duckduckgo">DuckDuckGo</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="yahoo">
-          <input type="radio" id="dropdown-yahoo" name="dropdown-search-engine" value="yahoo">
-          <label for="dropdown-yahoo">Yahoo</label>
-        </div>
-      </div>
-    </div>
-    
-    
-  </div>
+<div class="options-dropdown" id="options-dropdown"></div>
 
 
 </body>

@@ -1,0 +1,14 @@
+{
+	"sections": {
+		"search-engine": {
+			"title": "Search Engine",
+			"icon": "fas fa-search",
+			"options": {
+				"google": "https://www.google.com/search?q=%s",
+				"bing": "https://www.bing.com/search?q=%s",
+				"duckduckgo": "https://duckduckgo.com/?q=%s",
+				"yahoo": "https://search.yahoo.com/search?p=%s"
+			}
+		}
+	}
+}

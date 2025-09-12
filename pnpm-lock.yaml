@@ -17,18 +17,12 @@ importers:
       '@mercuryworkshop/epoxy-transport':
         specifier: ^2.1.25
         version: 2.1.25
-      '@titaniumnetwork-dev/ultraviolet':
-        specifier: ^3.2.10
-        version: 3.2.10
       '@tomphttp/bare-server-node':
         specifier: ^2.0.5
         version: 2.0.5(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       fastify:
         specifier: ^5.0.0
         version: 5.0.0
-      ultraviolet-static:
-        specifier: github:titaniumnetwork-dev/Ultraviolet-Static
-        version: https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23
       wisp-server-node:
         specifier: ^1.1.7
         version: 1.1.7
@@ -76,9 +70,6 @@ packages:
   '@mercuryworkshop/epoxy-transport@2.1.25':
     resolution: {integrity: sha512-vPlHDDG/h2K6WgwV/zKEdxauSCn/KfRHrJGHHK41zJw+oysoZPSTXU666Hf6SHVBv6L3zXpWmXeIuGJUUGJ9Fg==}
 
-  '@titaniumnetwork-dev/ultraviolet@3.2.10':
-    resolution: {integrity: sha512-Sf0Leb+NMEwFA8EQxCLW/wJW6TNR/EITBPKHadiq4DNOEbgXJdmIW8PKmsNkyOvAIN6o2peE86S6qxQt6ft1Ew==}
-
   '@tomphttp/bare-server-node@2.0.5':
     resolution: {integrity: sha512-j3355H1hsrsFCkFVePm7ccuUkjQq+Hgj/wnLmCQa2FzBh9B6+zRkd66kFHaYZ4PAOjSX5wHTKQuXVJrnb7GBxg==}
     engines: {node: '>=18.0.0'}
@@ -113,10 +104,6 @@ packages:
   ansi-styles@6.2.1:
     resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
     engines: {node: '>=12'}
-
-  astring@1.9.0:
-    resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
-    hasBin: true
 
   async-exit-hook@2.0.1:
     resolution: {integrity: sha512-NW2cX8m1Q7KPA7a5M2ULQeZ2wR5qI5PAbw5L0UOMxdioVk9PMZ0h1TmyZEkPYrCvYjDlFICusOu1dlEKAAeXBw==}
@@ -182,16 +169,8 @@ packages:
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
-  entities@4.5.0:
-    resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
-    engines: {node: '>=0.12'}
-
   escape-html@1.0.3:
     resolution: {integrity: sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==}
-
-  events@3.3.0:
-    resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
-    engines: {node: '>=0.8.x'}
 
   fast-decode-uri-component@1.0.1:
     resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
@@ -245,9 +224,6 @@ packages:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
 
-  idb@8.0.0:
-    resolution: {integrity: sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==}
-
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
@@ -283,10 +259,6 @@ packages:
     resolution: {integrity: sha512-CgeuL5uom6j/ZVrg7G/+1IXqRY8JXX4Hghfy5YE0EhoYQWvndP1kufu58cmZLNIDKnRhZrXfdS9urVWx98AipQ==}
     engines: {node: 20 || >=22}
 
-  meriyah@6.0.2:
-    resolution: {integrity: sha512-RHlo7GK3qrswKzVcMJ/2bMMkMChpn4L/JUOBfs81c3SKp/ZOS5u2aC/qY+sZCiE4qPkrC+a1yNPfGieh0uz19Q==}
-    engines: {node: '>=18.0.0'}
-
   mime@3.0.0:
     resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
     engines: {node: '>=10.0.0'}
@@ -310,9 +282,6 @@ packages:
 
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
-
-  parse5@7.2.0:
-    resolution: {integrity: sha512-ZkDsAOcxsUMZ4Lz5fVciOehNcJ+Gb8gTzcA4yl3wnc273BAybYWrQ+Ks/OjCjSEpjvQkDSeZbybK9qj2VHHdGA==}
 
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
@@ -442,10 +411,6 @@ packages:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
 
-  ultraviolet-static@https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23:
-    resolution: {tarball: https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23}
-    version: 1.0.5
-
   utf-8-validate@6.0.4:
     resolution: {integrity: sha512-xu9GQDeFp+eZ6LnCywXN/zBancWvOpUMzgjLPSjy4BRHSmTelvn2E0DG0o1sTiw5hkCKBHo8rwSKncfRfv2EEQ==}
     engines: {node: '>=6.14.2'}
@@ -534,16 +499,6 @@ snapshots:
     dependencies:
       '@mercuryworkshop/epoxy-tls': 2.1.14-1
 
-  '@titaniumnetwork-dev/ultraviolet@3.2.10':
-    dependencies:
-      '@mercuryworkshop/bare-mux': 2.1.6
-      astring: 1.9.0
-      events: 3.3.0
-      idb: 8.0.0
-      meriyah: 6.0.2
-      parse5: 7.2.0
-      set-cookie-parser: 2.7.1
-
   '@tomphttp/bare-server-node@2.0.5(bufferutil@4.0.8)(utf-8-validate@6.0.4)':
     dependencies:
       async-exit-hook: 2.0.1
@@ -579,8 +534,6 @@ snapshots:
       color-convert: 2.0.1
 
   ansi-styles@6.2.1: {}
-
-  astring@1.9.0: {}
 
   async-exit-hook@2.0.1: {}
 
@@ -633,11 +586,7 @@ snapshots:
 
   emoji-regex@9.2.2: {}
 
-  entities@4.5.0: {}
-
   escape-html@1.0.3: {}
-
-  events@3.3.0: {}
 
   fast-decode-uri-component@1.0.1: {}
 
@@ -717,8 +666,6 @@ snapshots:
       statuses: 2.0.1
       toidentifier: 1.0.1
 
-  idb@8.0.0: {}
-
   inherits@2.0.4: {}
 
   ipaddr.js@1.9.1: {}
@@ -747,8 +694,6 @@ snapshots:
 
   lru-cache@11.0.1: {}
 
-  meriyah@6.0.2: {}
-
   mime@3.0.0: {}
 
   minimatch@10.0.1:
@@ -762,10 +707,6 @@ snapshots:
   on-exit-leak-free@2.1.2: {}
 
   package-json-from-dist@1.0.1: {}
-
-  parse5@7.2.0:
-    dependencies:
-      entities: 4.5.0
 
   path-key@3.1.1: {}
 
@@ -879,8 +820,6 @@ snapshots:
   toad-cache@3.7.0: {}
 
   toidentifier@1.0.1: {}
-
-  ultraviolet-static@https://codeload.github.com/titaniumnetwork-dev/Ultraviolet-Static/tar.gz/d9a30997be87d0f25f36c85e2fc851528d8f8e23: {}
 
   utf-8-validate@6.0.4:
     dependencies:

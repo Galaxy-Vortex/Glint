@@ -64,7 +64,7 @@ function encodeURL(url) {
     }
   }
 
-  return __uv$config.prefix + __uv$config.encodeUrl(url);
+  return scramjet.encodeUrl(url);
 }
 
 window.addEventListener('load', async () => {

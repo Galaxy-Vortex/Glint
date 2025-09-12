@@ -1,5 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+
+	await import("/scram/scramjet.all.js");
+
+	const { ScramjetController } = $scramjetLoadController();
+	const scramjet = new ScramjetController({
+		files: {
+			wasm: "/scram/scramjet.wasm.wasm",
+			all: "/scram/scramjet.all.js",
+			sync: "/scram/scramjet.sync.js",
+		},
+		flags: {
+			rewriterLogs: false,
+			scramitize: false,
+			cleanErrors: true,
+		},
+		siteFlags: {
+			"https://worker-playground.glitch.me/.*": {
+				serviceworkers: true,
+			},
+		},
+	});
+	scramjet.init();
+	window.scramjet = scramjet;
+
+
   const tabsContainer = document.querySelector(".tabs");
   const newTabButton = document.querySelector(".new-tab-btn");
   const addressBarInput = document.querySelector(".address-bar-input");
@@ -419,7 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
         frame.style.display = frame.id === `proxy-frame-${tabId}` ? 'block' : 'none';
       });
 
-      proxyFrame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+      proxyFrame.src = scramjet.encodeUrl(url);
       addressBarInput.value = url;
 
       proxyFrame.onload = () => {
@@ -532,12 +557,12 @@ function updateTabDividers() {
 function updateAddressBar(url, tabId) {
   try {
     let displayUrl = url;
-    const prefix = __uv$config.prefix;
 
     if (displayUrl.startsWith(location.origin + prefix)) {
-      displayUrl = __uv$config.decodeUrl(
+			displayUrl = decodeURIComponent(
         displayUrl.substring(location.origin.length + prefix.length)
-      );
+			);
+
 
       tabs[tabId].url = displayUrl;
       tabs[tabId].title = displayUrl.length > 20

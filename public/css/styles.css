@@ -1003,6 +1003,42 @@ body {
   color: #fff;
 }
 
+.wisp-input-container {
+  padding: 8px 16px 16px 16px;
+}
+
+.wisp-input-container label {
+  display: block;
+  color: #a0a0a0;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+#input-wisp {
+  width: 100%;
+  background-color: #2c2c2c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#input-wisp:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: #2f2f2f;
+}
+
+#input-wisp::placeholder {
+  color: #666;
+  font-style: italic;
+}
 
 .hidden {
   display: none;
@@ -1047,6 +1083,20 @@ body {
   .search-option label {
     font-size: 13px;
   }
+  
+  .wisp-input-container {
+    padding: 6px 14px 14px 14px;
+  }
+  
+  .wisp-input-container label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  
+  #input-wisp {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1088,4 +1138,22 @@ body {
   .search-option label {
     font-size: 12px;
   }
+  
+  .wisp-input-container {
+    padding: 5px 12px 12px 12px;
+  }
+  
+  .wisp-input-container label {
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+  
+  #input-wisp {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
 }
+
+
+

@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const tabs = {};
   let activeTabId = "newtab";
+  
+  window.tabs = tabs;
+  window.activeTabId = activeTabId;
   let tabCounter = 1;
 
   tabs["newtab"] = {
@@ -114,6 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (frameWindow) {
           const currentURL = frameWindow.location.href;
           updateAddressBar(currentURL, tabId);
+          updateTabFaviconForUrl(tabId, currentURL);
         }
       } catch (e) {
       }
@@ -123,55 +127,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function updateTabFavicon(tabId, frame) {
-    try {
-      if (!frame.contentDocument) return;
-
-      const links = frame.contentDocument.querySelectorAll('link[rel*="icon"]');
-      if (links.length > 0) {
-        const faviconUrl = links[0].href;
-        setTabFavicon(tabId, faviconUrl);
-        return;
-      }
-
-      tryFaviconFallbacks(tabId);
-    } catch (err) {
-      console.log('Could not access favicon due to cross-origin restrictions');
-      tryFaviconFallbacks(tabId);
+    if (tabs[tabId]?.favicon && !tabs[tabId].favicon.includes('favicon-proxy')) {
+      return;
     }
+    
+    if (tabs[tabId]?.faviconLoading) {
+      return;
+    }
+    
+    tabs[tabId].faviconLoading = false;
   }
 
   function tryFaviconFallbacks(tabId) {
-    try {
-      const url = new URL(tabs[tabId].url);
-      const hostname = url.hostname;
-      
-      const faviconSources = [
-        `${url.protocol}//${hostname}/favicon.ico`,
-        `${url.protocol}//${hostname}/favicon.png`,
-        `${url.protocol}//${hostname}/apple-touch-icon.png`,
-        `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`,
-        `https://icons.duckduckgo.com/ip3/${hostname}.ico`,
-        `https://www.google.com/s2/favicons?domain=${hostname}`
-      ];
-
-      tryFaviconSource(tabId, faviconSources, 0, hostname);
-    } catch (err) {
-      console.error('Error setting favicon placeholder:', err);
-      setTabFaviconPlaceholder(tabId, '🌐');
-    }
+    tabs[tabId].faviconLoading = false;
   }
 
   function tryFaviconSource(tabId, sources, index, hostname) {
     if (index >= sources.length) {
-      const letter = hostname.charAt(0).toUpperCase();
-      setTabFaviconPlaceholder(tabId, letter);
+      tabs[tabId].faviconLoading = false;
       return;
     }
 
     const faviconUrl = sources[index];
+    
     checkFaviconExists(faviconUrl, (exists) => {
+      if (!tabs[tabId]?.faviconLoading) {
+        return;
+      }
+      
       if (exists) {
         setTabFavicon(tabId, faviconUrl);
+        tabs[tabId].faviconLoading = false;
       } else {
         tryFaviconSource(tabId, sources, index + 1, hostname);
       }
@@ -187,13 +173,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         loaded = true;
         callback(false);
       }
-    }, 3000);
+    }, 2000);
     
     img.onload = () => {
       if (!loaded) {
         loaded = true;
         clearTimeout(timeout);
-        callback(true);
+        if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+          callback(true);
+        } else {
+          callback(false);
+        }
       }
     };
     
@@ -205,10 +195,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
     
+    if (url.startsWith('http')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.src = url;
   }
 
   function setTabFavicon(tabId, faviconUrl) {
+    if (!tabs[tabId]) {
+      return;
+    }
+    
     tabs[tabId].favicon = faviconUrl;
     const tab = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
     if (tab) {
@@ -223,30 +220,93 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       
       favicon.onerror = () => {
-        console.log(`Failed to load favicon: ${faviconUrl}`);
         favicon.remove();
-        const url = new URL(tabs[tabId].url);
-        setTabFaviconPlaceholder(tabId, url.hostname.charAt(0).toUpperCase());
       };
       
       favicon.src = faviconUrl;
     }
   }
 
-  function setTabFaviconPlaceholder(tabId, letter) {
-    const tab = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
-    if (tab) {
-      const favicon = tab.querySelector('.tab-favicon');
-      if (favicon) favicon.remove();
-
-      let placeholder = tab.querySelector('.tab-favicon-placeholder');
-      if (!placeholder) {
-        placeholder = document.createElement('div');
-        placeholder.className = 'tab-favicon-placeholder';
-        tab.insertBefore(placeholder, tab.firstChild);
-      }
-      placeholder.innerHTML = letter || '<i class="fas fa-globe"></i>';
+  function updateTabFaviconForUrl(tabId, url) {
+    if (tabs[tabId]) {
+      tabs[tabId].faviconLoading = false;
+      tabs[tabId].url = url;
     }
+    
+    try {
+      const actualUrl = decodeProxiedUrl(url) || url;
+      const actualHostname = new URL(actualUrl).hostname;
+      
+      if (tabs[tabId]?.faviconLoading) {
+        return;
+      }
+      
+      tabs[tabId].faviconLoading = true;
+      
+      const faviconSources = [
+        `/favicon-proxy?url=${encodeURIComponent(`https://www.google.com/s2/favicons?domain=${actualHostname}&sz=32`)}`,
+        `/favicon-proxy?url=${encodeURIComponent(`https://icons.duckduckgo.com/ip3/${actualHostname}.ico`)}`,
+        `/favicon-proxy?url=${encodeURIComponent(`https://favicons.githubusercontent.com/${actualHostname}`)}`
+      ];
+      
+      let faviconLoaded = false;
+      let sourceIndex = 0;
+      
+      const tryNextSource = () => {
+        if (faviconLoaded || sourceIndex >= faviconSources.length) {
+          tabs[tabId].faviconLoading = false;
+          return;
+        }
+        
+        if (!tabs[tabId]?.faviconLoading) {
+          return;
+        }
+        
+        checkFaviconExists(faviconSources[sourceIndex], (exists) => {
+          if (exists && !faviconLoaded && tabs[tabId]?.faviconLoading) {
+            faviconLoaded = true;
+            setTabFavicon(tabId, faviconSources[sourceIndex]);
+            tabs[tabId].faviconLoading = false;
+          } else {
+            sourceIndex++;
+            tryNextSource();
+          }
+        });
+      };
+      
+      tryNextSource();
+    } catch (err) {
+      if (tabs[tabId]) {
+        tabs[tabId].faviconLoading = false;
+      }
+    }
+  }
+
+  function startIframeNavigationMonitor(iframe, tabId) {
+    let lastUrl = '';
+    
+    const checkForNavigation = () => {
+      try {
+        const frameWindow = iframe.contentWindow;
+        if (frameWindow) {
+          const currentURL = frameWindow.location.href;
+          
+          if (currentURL !== lastUrl) {
+            lastUrl = currentURL;
+            updateAddressBar(currentURL, tabId);
+            updateTabFaviconForUrl(tabId, currentURL);
+          }
+        }
+      } catch (e) {
+      }
+    };
+    
+    const monitorInterval = setInterval(checkForNavigation, 500);
+    
+    if (!tabs[tabId]) tabs[tabId] = {};
+    tabs[tabId].navigationMonitor = monitorInterval;
+    
+    checkForNavigation();
   }
 
   const setActiveTab = (tabId) => {
@@ -354,6 +414,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const proxyFrame = document.getElementById(`proxy-frame-${tabId}`);
     if (proxyFrame) proxyFrame.remove();
 
+    if (tabs[tabId]?.navigationMonitor) {
+      clearInterval(tabs[tabId].navigationMonitor);
+    }
+
     delete tabs[tabId];
 
     tabElement.remove();
@@ -416,16 +480,47 @@ document.addEventListener("DOMContentLoaded", async () => {
       const urlObj = new URL(url);
       const hostname = urlObj.hostname;
       
-      setTabFaviconPlaceholder(tabId, '⏳');
+      const actualUrl = decodeProxiedUrl(url) || url;
+      const actualHostname = new URL(actualUrl).hostname;
       
-      const quickFavicon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
-      checkFaviconExists(quickFavicon, (exists) => {
-        if (exists) {
-          setTabFavicon(tabId, quickFavicon);
-        } else {
-          setTabFaviconPlaceholder(tabId, hostname.charAt(0).toUpperCase());
+      if (tabs[tabId]?.faviconLoading) {
+        return;
+      }
+      
+      tabs[tabId].faviconLoading = true;
+      
+      const faviconSources = [
+        `/favicon-proxy?url=${encodeURIComponent(`https://www.google.com/s2/favicons?domain=${actualHostname}&sz=32`)}`,
+        `/favicon-proxy?url=${encodeURIComponent(`https://icons.duckduckgo.com/ip3/${actualHostname}.ico`)}`,
+        `/favicon-proxy?url=${encodeURIComponent(`https://favicons.githubusercontent.com/${actualHostname}`)}`
+      ];
+      
+      let faviconLoaded = false;
+      let sourceIndex = 0;
+      
+      const tryNextSource = () => {
+        if (faviconLoaded || sourceIndex >= faviconSources.length) {
+          tabs[tabId].faviconLoading = false;
+          return;
         }
-      });
+        
+        if (!tabs[tabId]?.faviconLoading) {
+          return;
+        }
+        
+        checkFaviconExists(faviconSources[sourceIndex], (exists) => {
+          if (exists && !faviconLoaded && tabs[tabId]?.faviconLoading) {
+            faviconLoaded = true;
+            setTabFavicon(tabId, faviconSources[sourceIndex]);
+            tabs[tabId].faviconLoading = false;
+          } else {
+            sourceIndex++;
+            tryNextSource();
+          }
+        });
+      };
+      
+      tryNextSource();
     } catch (err) {
       console.log('Error preloading favicon:', err);
     }
@@ -457,6 +552,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (frameWindow) {
             const currentURL = frameWindow.location.href;
             updateAddressBar(currentURL, tabId);
+            updateTabFaviconForUrl(tabId, currentURL);
           }
         } catch (e) {
         }
@@ -520,7 +616,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           proxyFrame.onload = () => {
             proxyFrame.classList.remove('loading');
 
-            monitorIframeNavigation(proxyFrame, activeTabId);
+            startIframeNavigationMonitor(proxyFrame, activeTabId);
 
             if (originalOnload) {
               originalOnload();
@@ -544,6 +640,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateTabDividers();
 });
 
+function decodeProxiedUrl(proxiedUrl) {
+  try {
+    const url = new URL(proxiedUrl);
+    
+    if (url.pathname.startsWith('/scramjet/')) {
+      const encodedUrl = url.pathname.substring('/scramjet/'.length);
+      if (encodedUrl) {
+        try {
+          const decoded = decodeURIComponent(encodedUrl);
+          if (decoded.startsWith('http')) {
+            return decoded;
+          }
+          return atob(encodedUrl);
+        } catch (e) {
+          return encodedUrl;
+        }
+      }
+    }
+    
+    if (url.searchParams.has('url')) {
+      return url.searchParams.get('url');
+    }
+    
+    const pathMatch = url.pathname.match(/^\/proxy\/(.+)$/);
+    if (pathMatch) {
+      return decodeURIComponent(pathMatch[1]);
+    }
+    
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
 function updateTabDividers() {
   const tabsContainer = document.querySelector(".tabs");
   tabsContainer.querySelectorAll(".tab-divider").forEach((div) => div.remove());
@@ -560,24 +690,30 @@ function updateTabDividers() {
 function updateAddressBar(url, tabId) {
   try {
     let displayUrl = url;
+    
+    const tabsRef = window.tabs || tabs;
+    const addressBarInput = document.querySelector('.address-bar-input');
 
     if (displayUrl.startsWith(location.origin + "/scramjet/")) {
 			displayUrl = decodeURIComponent(
         displayUrl.substring(location.origin.length + "/scramjet/".length)
 			);
 
+      if (tabsRef && tabsRef[tabId]) {
+        tabsRef[tabId].url = displayUrl;
+        tabsRef[tabId].title = displayUrl.length > 20
+          ? displayUrl.substring(0, 20) + '...'
+          : displayUrl;
 
-      tabs[tabId].url = displayUrl;
-      tabs[tabId].title = displayUrl.length > 20
-        ? displayUrl.substring(0, 20) + '...'
-        : displayUrl;
-
-      const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
-      if (tabTitle) {
-        tabTitle.textContent = tabs[tabId].title;
+        const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
+        if (tabTitle) {
+          tabTitle.textContent = tabsRef[tabId].title;
+        }
       }
 
-      addressBarInput.value = displayUrl;
+      if (addressBarInput) {
+        addressBarInput.value = displayUrl;
+      }
     }
   } catch (e) {
     console.error("Error updating address bar:", e);

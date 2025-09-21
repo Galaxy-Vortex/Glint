@@ -57,6 +57,57 @@ fastify.get("/", (req, reply) => {
 	return reply.sendFile("index.html", publicDir);
 });
 
+fastify.get("/favicon-proxy", async (req, reply) => {
+	try {
+		const { url } = req.query;
+		
+		if (!url) {
+			return reply.code(400).send({ error: 'URL parameter is required' });
+		}
+		
+		const validServices = [
+			'www.google.com/s2/favicons',
+			'icons.duckduckgo.com/ip3',
+			'favicons.githubusercontent.com'
+		];
+		
+		const urlObj = new URL(url);
+		const isValidService = validServices.some(service => 
+			urlObj.hostname + urlObj.pathname.split('/')[1] === service.split('/')[0] ||
+			urlObj.href.includes(service)
+		);
+		
+		if (!isValidService) {
+			return reply.code(403).send({ error: 'Invalid favicon service' });
+		}
+		
+		const response = await fetch(url, {
+			headers: {
+				'User-Agent': 'Glint-Browser/1.0',
+				'Accept': 'image/*,*/*;q=0.8'
+			},
+			timeout: 5000
+		});
+		
+		if (!response.ok) {
+			return reply.code(response.status).send({ error: 'Failed to fetch favicon' });
+		}
+		
+		const contentType = response.headers.get('content-type') || 'image/x-icon';
+		const imageBuffer = await response.arrayBuffer();
+		
+		reply.header('Content-Type', contentType);
+		reply.header('Cache-Control', 'public, max-age=86400');
+		reply.header('Access-Control-Allow-Origin', '*');
+		
+		return reply.send(Buffer.from(imageBuffer));
+		
+	} catch (error) {
+		console.error('Favicon proxy error:', error);
+		return reply.code(500).send({ error: 'Internal server error' });
+	}
+});
+
 
 // Epoxy transport (encrypted proxy data)
 fastify.register(fastifyStatic, {

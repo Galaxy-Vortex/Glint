@@ -102,6 +102,14 @@ body {
   animation: tabAppear 0.2s ease;
 }
 
+.tab[draggable="true"] {
+  cursor: grab;
+}
+
+.tab[draggable="true"]:active {
+  cursor: grabbing;
+}
+
 .tab:not(.active)::after {
   content: '';
   position: absolute;
@@ -140,6 +148,38 @@ body {
   color: #ffffff;
   z-index: 2;
   transform: translateY(1px);
+}
+
+.tab.dragging {
+  opacity: 0.5;
+  transform: translateY(1px) scale(0.95);
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: none;
+}
+
+.tab.drag-over {
+  background: rgba(76, 175, 80, 0.2);
+  border-left: 3px solid #4CAF50;
+  transform: translateY(1px) scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.tab.drag-over::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 12px 12px 0 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tab:not(.dragging) {
+  transition: all 0.2s ease;
 }
 
 

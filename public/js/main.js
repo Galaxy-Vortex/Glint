@@ -361,6 +361,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const newTabElement = document.createElement("div");
     newTabElement.className = "tab";
     newTabElement.setAttribute("data-tab-id", tabId);
+    newTabElement.setAttribute("draggable", "true");
     newTabElement.innerHTML = `
         <div class="tab-favicon-placeholder">
           <i class="fas fa-home"></i>
@@ -391,6 +392,102 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.stopPropagation();
       closeTab(tabId);
     });
+
+    tabElement.addEventListener("dragstart", handleDragStart);
+    tabElement.addEventListener("dragover", handleDragOver);
+    tabElement.addEventListener("drop", handleDrop);
+    tabElement.addEventListener("dragend", handleDragEnd);
+    tabElement.addEventListener("dragenter", handleDragEnter);
+    tabElement.addEventListener("dragleave", handleDragLeave);
+  };
+
+  let draggedTab = null;
+  let draggedTabId = null;
+
+  const handleDragStart = (e) => {
+    draggedTab = e.target;
+    draggedTabId = e.target.getAttribute("data-tab-id");
+    
+    e.target.classList.add("dragging");
+    
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/html", e.target.outerHTML);
+    
+    const dragImage = e.target.cloneNode(true);
+    dragImage.style.opacity = "0.8";
+    dragImage.style.transform = "rotate(5deg)";
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, 0, 0);
+    
+    setTimeout(() => {
+      if (document.body.contains(dragImage)) {
+        document.body.removeChild(dragImage);
+      }
+    }, 0);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    if (e.target.classList.contains("tab") && e.target !== draggedTab) {
+      e.target.classList.add("drag-over");
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    if (e.target.classList.contains("tab")) {
+      e.target.classList.remove("drag-over");
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    
+    const dropTarget = e.target.closest(".tab");
+    if (dropTarget && dropTarget !== draggedTab) {
+      const dropTargetId = dropTarget.getAttribute("data-tab-id");
+      reorderTabs(draggedTabId, dropTargetId);
+    }
+    
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.classList.remove("drag-over");
+    });
+  };
+
+  const handleDragEnd = (e) => {
+    e.target.classList.remove("dragging");
+    
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.classList.remove("drag-over");
+    });
+    
+    draggedTab = null;
+    draggedTabId = null;
+  };
+
+  const reorderTabs = (draggedId, targetId) => {
+    const draggedElement = document.querySelector(`.tab[data-tab-id="${draggedId}"]`);
+    const targetElement = document.querySelector(`.tab[data-tab-id="${targetId}"]`);
+    
+    if (!draggedElement || !targetElement) return;
+    
+    const tabsContainer = document.querySelector(".tabs");
+    const allTabs = Array.from(tabsContainer.querySelectorAll(".tab"));
+    
+    const draggedIndex = allTabs.indexOf(draggedElement);
+    const targetIndex = allTabs.indexOf(targetElement);
+    
+    if (draggedIndex < targetIndex) {
+      targetElement.parentNode.insertBefore(draggedElement, targetElement.nextSibling);
+    } else {
+      targetElement.parentNode.insertBefore(draggedElement, targetElement);
+    }
+    
+    updateTabDividers();
   };
 
   const closeTab = (tabId) => {

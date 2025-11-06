@@ -163,6 +163,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     return url;
   }
 
+  function getWebsiteName(url) {
+    try {
+      if (!url || (!url.startsWith("http://") && !url.startsWith("https://"))) {
+        return url;
+      }
+      
+      const urlObj = new URL(url);
+      let hostname = urlObj.hostname;
+      
+      if (hostname.startsWith('www.')) {
+        hostname = hostname.substring(4);
+      }
+      
+      return hostname;
+    } catch (e) {
+      return url.length > 20 ? url.substring(0, 20) + '...' : url;
+    }
+  }
+
   let saveTabsTimeout = null;
   function saveTabsToStorage(immediate = false) {
     if (saveTabsTimeout && !immediate) {
@@ -608,6 +627,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       tabs[tabId].faviconLoading = false;
       const originalUrl = getOriginalUrl(url);
       tabs[tabId].url = originalUrl;
+      tabs[tabId].title = getWebsiteName(originalUrl);
+      
+      const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
+      if (tabTitle) {
+        tabTitle.textContent = tabs[tabId].title;
+      }
+      
       saveTabsToStorage();
     }
     
@@ -677,6 +703,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (tabs[tabId]) {
               const originalUrl = getOriginalUrl(currentURL);
               tabs[tabId].url = originalUrl;
+              tabs[tabId].title = getWebsiteName(originalUrl);
+              
+              const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
+              if (tabTitle) {
+                tabTitle.textContent = tabs[tabId].title;
+              }
+              
               saveTabsToStorage();
             }
           }
@@ -990,9 +1023,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     
     tabs[tabId].url = originalUrl;
-    tabs[tabId].title = originalUrl.length > 20
-      ? originalUrl.substring(0, 20) + '...'
-      : originalUrl;
+    tabs[tabId].title = getWebsiteName(originalUrl);
     tabs[tabId].isNewTab = false;
 
     const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
@@ -1173,7 +1204,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
                 
                 tabs[activeTabId].url = urlToEncode;
+                tabs[activeTabId].title = getWebsiteName(urlToEncode);
                 addressBarInput.value = urlToEncode;
+                
+                const tabTitle = document.querySelector(`.tab[data-tab-id="${activeTabId}"] .tab-title`);
+                if (tabTitle) {
+                  tabTitle.textContent = tabs[activeTabId].title;
+                }
                 
                 proxyFrame.onload = () => {
                   proxyFrame.classList.remove('loading');
@@ -1248,7 +1285,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
                 
                 tabs[activeTabId].url = urlToEncode;
+                tabs[activeTabId].title = getWebsiteName(urlToEncode);
                 addressBarInput.value = urlToEncode;
+                
+                const tabTitle = document.querySelector(`.tab[data-tab-id="${activeTabId}"] .tab-title`);
+                if (tabTitle) {
+                  tabTitle.textContent = tabs[activeTabId].title;
+                }
                 
                 proxyFrame.onload = () => {
                   proxyFrame.classList.remove('loading');
@@ -1440,9 +1483,7 @@ function updateAddressBar(url, tabId) {
 
       if (tabsRef && tabsRef[tabId]) {
         tabsRef[tabId].url = displayUrl;
-        tabsRef[tabId].title = displayUrl.length > 20
-          ? displayUrl.substring(0, 20) + '...'
-          : displayUrl;
+        tabsRef[tabId].title = getWebsiteName(displayUrl);
 
         const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
         if (tabTitle) {

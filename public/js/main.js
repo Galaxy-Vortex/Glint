@@ -199,6 +199,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       saveTabsTimeout = setTimeout(performSave, 300);
     }
   }
+  
+  window.saveTabsToStorage = saveTabsToStorage;
 
   function restoreTabsFromStorage() {
     try {
@@ -339,34 +341,82 @@ document.addEventListener("DOMContentLoaded", async () => {
         setTimeout(() => {
           const proxyFrame = document.getElementById(`proxy-frame-${tabId}`);
           if (proxyFrame && window.scramjet && originalUrl) {
-            proxyFrame.classList.add('loading');
-            proxyFrame.src = window.scramjet.encodeUrl(originalUrl);
-            
-            tabs[tabId].url = originalUrl;
-            tabs[tabId].isHistoryNavigation = true;
-            
-            proxyFrame.onload = () => {
-              proxyFrame.classList.remove('loading');
-              updateTabFavicon(tabId, proxyFrame);
+            const attemptRestoreNavigation = () => {
+              if (!window.scramjet || !window.scramjet.encodeUrl) {
+                setTimeout(attemptRestoreNavigation, 100);
+                return;
+              }
               
               try {
-                const frameWindow = proxyFrame.contentWindow;
-                if (frameWindow) {
-                  const currentURL = frameWindow.location.href;
-                  updateAddressBar(currentURL, tabId);
-                  updateTabFaviconForUrl(tabId, currentURL);
-                  
-                  const actualOriginalUrl = getOriginalUrl(currentURL);
-                  if (tabs[tabId]) {
-                    tabs[tabId].url = actualOriginalUrl;
-                    tabs[tabId].isHistoryNavigation = false;
+                let urlToEncode = originalUrl;
+                
+                if (urlToEncode.includes("/scramjet/") || urlToEncode.includes(location.origin + "/scramjet/")) {
+                  const decoded = getOriginalUrl(urlToEncode);
+                  if (decoded && (decoded.startsWith("http://") || decoded.startsWith("https://"))) {
+                    urlToEncode = decoded;
                   }
                 }
-              } catch (e) {
+                
+                proxyFrame.classList.add('loading');
+                
+                if (tabId === activeTabId) {
+                  newTabPage.style.display = 'none';
+                  proxyFramesContainer.style.pointerEvents = 'auto';
+                  proxyFramesContainer.style.zIndex = '10';
+                  
+                  document.querySelectorAll('.proxy-frame').forEach(frame => {
+                    frame.style.display = frame.id === `proxy-frame-${tabId}` ? 'block' : 'none';
+                  });
+                }
+                
+                const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
+                
+                tabs[tabId].url = originalUrl;
+                tabs[tabId].isHistoryNavigation = true;
+                
+                proxyFrame.onload = () => {
+                  proxyFrame.classList.remove('loading');
+                  updateTabFavicon(tabId, proxyFrame);
+                  
+                  if (tabs[tabId]?.navigationMonitor) {
+                    clearInterval(tabs[tabId].navigationMonitor);
+                  }
+                  startIframeNavigationMonitor(proxyFrame, tabId);
+                  
+                  try {
+                    const frameWindow = proxyFrame.contentWindow;
+                    if (frameWindow) {
+                      const currentURL = frameWindow.location.href;
+                      updateAddressBar(currentURL, tabId);
+                      updateTabFaviconForUrl(tabId, currentURL);
+                      
+                      const actualOriginalUrl = getOriginalUrl(currentURL);
+                      if (tabs[tabId]) {
+                        tabs[tabId].url = actualOriginalUrl;
+                        tabs[tabId].isHistoryNavigation = false;
+                      }
+                    }
+                  } catch (e) {
+                  }
+                };
+                
+                proxyFrame.onerror = () => {
+                  proxyFrame.classList.remove('loading');
+                  tabs[tabId].isHistoryNavigation = false;
+                  console.error('Error loading restored tab:', tabId);
+                };
+                
+                proxyFrame.src = encodedUrl;
+              } catch (err) {
+                console.error('Error restoring tab navigation:', err);
+                proxyFrame.classList.remove('loading');
+                tabs[tabId].isHistoryNavigation = false;
               }
             };
+            
+            attemptRestoreNavigation();
           }
-        }, 100);
+        }, 200);
       }
     }
   };
@@ -420,23 +470,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     frame.style.border = 'none';
     frame.style.width = '100%';
     frame.style.height = '100%';
+    frame.setAttribute('loading', 'lazy');
     proxyFramesContainer.appendChild(frame);
 
     frame.classList.add('loading');
-    frame.onload = () => {
+    
+    const defaultOnload = () => {
       frame.classList.remove('loading');
       updateTabFavicon(tabId, frame);
 
       try {
         const frameWindow = frame.contentWindow;
-        if (frameWindow) {
+        if (frameWindow && frame.src) {
           const currentURL = frameWindow.location.href;
           updateAddressBar(currentURL, tabId);
           updateTabFaviconForUrl(tabId, currentURL);
+          
+          if (tabs[tabId] && !tabs[tabId].isNewTab && frame.src) {
+            if (tabs[tabId]?.navigationMonitor) {
+              clearInterval(tabs[tabId].navigationMonitor);
+            }
+            startIframeNavigationMonitor(frame, tabId);
+          }
         }
       } catch (e) {
       }
     };
+    
+    frame.onload = defaultOnload;
 
     return frame;
   }
@@ -1022,8 +1083,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
         
-        proxyFrame.src = window.scramjet.encodeUrl(urlToEncode);
-        addressBarInput.value = originalUrl;
+        const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
         
         if (!tabs[tabId].isHistoryNavigation) {
           addToHistory(tabId, originalUrl);
@@ -1033,6 +1093,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         proxyFrame.onload = () => {
           proxyFrame.classList.remove('loading');
           updateTabFavicon(tabId, proxyFrame);
+
+          if (tabs[tabId]?.navigationMonitor) {
+            clearInterval(tabs[tabId].navigationMonitor);
+          }
+          startIframeNavigationMonitor(proxyFrame, tabId);
 
           try {
             const frameWindow = proxyFrame.contentWindow;
@@ -1049,6 +1114,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           } catch (e) {
           }
         };
+        
+        proxyFrame.src = encodedUrl;
+        addressBarInput.value = originalUrl;
       } catch (err) {
         console.error('Error loading proxied content:', err);
         proxyFrame.classList.remove('loading');
@@ -1102,7 +1170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               
               try {
                 const urlToEncode = getOriginalUrl(previousUrl);
-                proxyFrame.src = window.scramjet.encodeUrl(urlToEncode);
+                const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
                 
                 tabs[activeTabId].url = urlToEncode;
                 addressBarInput.value = urlToEncode;
@@ -1110,6 +1178,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 proxyFrame.onload = () => {
                   proxyFrame.classList.remove('loading');
                   updateTabFavicon(activeTabId, proxyFrame);
+                  
+                  if (tabs[activeTabId]?.navigationMonitor) {
+                    clearInterval(tabs[activeTabId].navigationMonitor);
+                  }
+                  startIframeNavigationMonitor(proxyFrame, activeTabId);
                   
                   try {
                     const frameWindow = proxyFrame.contentWindow;
@@ -1129,6 +1202,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     tabs[activeTabId].isHistoryNavigation = false;
                   }
                 };
+                
+                proxyFrame.src = encodedUrl;
               } catch (err) {
                 console.error('Error navigating back:', err);
                 proxyFrame.classList.remove('loading');
@@ -1170,7 +1245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               
               try {
                 const urlToEncode = getOriginalUrl(nextUrl);
-                proxyFrame.src = window.scramjet.encodeUrl(urlToEncode);
+                const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
                 
                 tabs[activeTabId].url = urlToEncode;
                 addressBarInput.value = urlToEncode;
@@ -1178,6 +1253,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 proxyFrame.onload = () => {
                   proxyFrame.classList.remove('loading');
                   updateTabFavicon(activeTabId, proxyFrame);
+                  
+                  if (tabs[activeTabId]?.navigationMonitor) {
+                    clearInterval(tabs[activeTabId].navigationMonitor);
+                  }
+                  startIframeNavigationMonitor(proxyFrame, activeTabId);
                   
                   try {
                     const frameWindow = proxyFrame.contentWindow;
@@ -1197,6 +1277,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     tabs[activeTabId].isHistoryNavigation = false;
                   }
                 };
+                
+                proxyFrame.src = encodedUrl;
               } catch (err) {
                 console.error('Error navigating forward:', err);
                 proxyFrame.classList.remove('loading');
@@ -1242,11 +1324,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             try {
               const urlToEncode = getOriginalUrl(originalUrl);
-              proxyFrame.src = window.scramjet.encodeUrl(urlToEncode);
+              const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
               
               proxyFrame.onload = () => {
                 proxyFrame.classList.remove('loading');
                 updateTabFavicon(activeTabId, proxyFrame);
+                
+                if (tabs[activeTabId]?.navigationMonitor) {
+                  clearInterval(tabs[activeTabId].navigationMonitor);
+                }
+                startIframeNavigationMonitor(proxyFrame, activeTabId);
                 
                 try {
                   const frameWindow = proxyFrame.contentWindow;
@@ -1264,6 +1351,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 } catch (e) {
                 }
               };
+              
+              proxyFrame.src = encodedUrl;
             } catch (err) {
               console.error('Error reloading:', err);
               proxyFrame.classList.remove('loading');
@@ -1360,7 +1449,10 @@ function updateAddressBar(url, tabId) {
           tabTitle.textContent = tabsRef[tabId].title;
         }
         
-        saveTabsToStorage();
+        const saveFunction = window.saveTabsToStorage || saveTabsToStorage;
+        if (typeof saveFunction === 'function') {
+          saveFunction();
+        }
       }
 
       if (addressBarInput) {

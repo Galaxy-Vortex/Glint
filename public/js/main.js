@@ -327,6 +327,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     setActiveTab(activeTabId);
     saveTabsToStorage = prevSave;
     
+    updateTabDividers();
+    
     for (const [tabId, tabData] of Object.entries(tabs)) {
       if (tabData.pendingUrl) {
         const url = tabData.pendingUrl;

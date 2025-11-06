@@ -364,7 +364,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     newTabElement.setAttribute("draggable", "true");
     newTabElement.innerHTML = `
         <div class="tab-favicon-placeholder">
-          <i class="fas fa-home"></i>
+          <img src="images/logo.png" alt="Glint Logo" class="tab-logo">
         </div>
         <span class="tab-title">New Tab</span>
         <span class="tab-close"><i class="fas fa-times"></i></span>
@@ -409,6 +409,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     draggedTabId = e.target.getAttribute("data-tab-id");
     
     e.target.classList.add("dragging");
+    document.body.classList.add("dragging");
     
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/html", e.target.outerHTML);
@@ -429,18 +430,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
+    
+    const tab = e.target.closest(".tab");
+    if (tab && tab !== draggedTab) {
+      tab.classList.add("drag-over");
+    }
   };
 
   const handleDragEnter = (e) => {
     e.preventDefault();
-    if (e.target.classList.contains("tab") && e.target !== draggedTab) {
-      e.target.classList.add("drag-over");
+    const tab = e.target.closest(".tab");
+    if (tab && tab !== draggedTab) {
+      document.querySelectorAll(".tab").forEach(t => {
+        if (t !== tab && t !== draggedTab) {
+          t.classList.remove("drag-over");
+        }
+      });
+      tab.classList.add("drag-over");
     }
   };
 
   const handleDragLeave = (e) => {
-    if (e.target.classList.contains("tab")) {
-      e.target.classList.remove("drag-over");
+    const tab = e.target.closest(".tab");
+    if (tab) {
+      const relatedTarget = e.relatedTarget;
+      if (!relatedTarget || !tab.contains(relatedTarget)) {
+        tab.classList.remove("drag-over");
+      }
     }
   };
 
@@ -460,6 +476,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const handleDragEnd = (e) => {
     e.target.classList.remove("dragging");
+    document.body.classList.remove("dragging");
     
     document.querySelectorAll(".tab").forEach(tab => {
       tab.classList.remove("drag-over");

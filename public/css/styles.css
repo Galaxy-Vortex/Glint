@@ -16,6 +16,7 @@ body {
 
 body.dragging {
   overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 
@@ -85,6 +86,9 @@ body.dragging {
   gap: 0;
   overflow-x: hidden;
   overflow-y: hidden;
+  padding-left: 12px;
+  margin-left: -12px;
+  position: relative;
 }
 
 
@@ -101,41 +105,73 @@ body.dragging {
   height: 36px;
   font-size: 13px;
   color: #e0e0e0;
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
   position: relative;
   border: none;
   border-bottom: none;
-  transition: all 0.2s ease;
-  overflow: hidden;
-  animation: tabAppear 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  overflow: visible;
 }
 
-.tab[draggable="true"] {
-  cursor: grab;
+.tab::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -12px;
+  width: 12px;
+  height: 12px;
+  background: transparent;
+  border-bottom-right-radius: 12px;
+  box-shadow: 6px 6px 0 6px #2c2c2c;
+  z-index: 0;
+  pointer-events: none;
+  transition: box-shadow 0.2s ease 0s;
 }
 
-.tab[draggable="true"]:active {
+.tab:first-child::before {
+  left: -12px;
+  box-shadow: 6px 6px 0 6px #2c2c2c;
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -12px;
+  width: 12px;
+  height: 12px;
+  background: transparent;
+  border-bottom-left-radius: 12px;
+  box-shadow: -6px 6px 0 6px #2c2c2c;
+  z-index: 0;
+  pointer-events: none;
+  transition: box-shadow 0.2s ease 0s;
+}
+
+.tab:active {
   cursor: grabbing;
 }
 
-.tab:not(.active)::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 6px;
-  right: 6px;
-  bottom: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  z-index: 1;
-  pointer-events: none;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
-  opacity: 0;
-  transition: opacity 0.2s ease-in;
+.tab:not(.active):hover {
+  background: #3a3a3a;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.tab:not(.active):hover::before {
+  box-shadow: 6px 6px 0 6px #3a3a3a;
+  transition: box-shadow 0.2s ease 0s;
+}
+
+.tab:first-child:not(.active):hover::before {
+  left: -12px;
+  box-shadow: 6px 6px 0 6px #3a3a3a;
+  transition: box-shadow 0.2s ease 0s;
 }
 
 .tab:not(.active):hover::after {
-  opacity: 1;
+  box-shadow: -6px 6px 0 6px #3a3a3a;
+  transition: box-shadow 0.2s ease 0s;
 }
 
 .tab-favicon-placeholder,
@@ -155,37 +191,40 @@ body.dragging {
   background: #1a1a1a;
   color: #ffffff;
   z-index: 2;
-  transform: translateY(1px);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab.active::before {
+  box-shadow: 6px 6px 0 6px #1a1a1a;
+  transition: box-shadow 0.2s ease 0s;
+}
+
+.tab:first-child.active::before {
+  left: -12px;
+  box-shadow: 6px 6px 0 6px #1a1a1a;
+  transition: box-shadow 0.2s ease 0s;
+}
+
+.tab.active::after {
+  box-shadow: -6px 6px 0 6px #1a1a1a;
+  transition: box-shadow 0.2s ease 0s;
 }
 
 .tab.dragging {
-  opacity: 0.5;
+  opacity: 1;
   z-index: 1000;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  transition: none;
-}
-
-.tab.drag-over {
-  background: rgba(76, 175, 80, 0.2);
-  border-left: 3px solid #4CAF50;
-  transition: none;
-}
-
-.tab.drag-over::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(76, 175, 80, 0.1);
-  border-radius: 12px 12px 0 0;
-  z-index: 1;
-  pointer-events: none;
+  transition: none !important;
+  cursor: grabbing !important;
 }
 
 .tab:not(.dragging) {
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.tab:not(.dragging)::before,
+.tab:not(.dragging)::after {
+  transition: box-shadow 0.2s ease 0s;
 }
 
 

@@ -22,15 +22,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="js/utils/url-utils.js" defer></script>
+  <script src="js/utils/favicon.js" defer></script>
+  <script src="js/utils/proxy-frames.js" defer></script>
+  <script src="js/tabs/tab-history.js" defer></script>
+  <script src="js/tabs/tab-storage.js" defer></script>
+  <script src="js/tabs/tab-dragging.js" defer></script>
+  <script src="js/tabs/tab-management.js" defer></script>
+  <script src="js/navigation/navigation.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/search.js" defer></script>
   <script src="js/proxy-config.js" defer></script>
   <script src="js/options.js" defer></script>
   <script src="js/register-sw.js" defer></script>
-  <!-- Proxy dependencies - loading order matters -->
+  <!-- proxy deps -->
   <script src="baremux/index.js" defer></script>
   <script src="epoxy/index.js" defer></script>
-	<script src="scram/scramjet.all.js" defer></script>
+  <script src="scram/scramjet.all.js" defer></script>
 </head>
 
 <body>
@@ -146,19 +154,17 @@
           <label for="dropdown-yahoo">Yahoo</label>
         </div>
       </div>
-		</div>
+    </div>
 
     <div class="dropdown-section-header">
       <i class="fas fa-server"></i>
-			<span>Proxy</span>
+      <span>Proxy</span>
     </div>
 
     <div class="dropdown-section wisp-input-container">
-			<label for="input-wisp">
-				 Wisp URL:
-			</label>
-			<input type="text" id="input-wisp" name="input-wisp" placeholder="wss://example.com/wisp/"/>
-		</div>
+      <label for="input-wisp">Wisp URL:</label>
+      <input type="text" id="input-wisp" name="input-wisp" placeholder="wss://example.com/wisp/"/>
+    </div>
 
   </div>
 

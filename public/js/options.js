@@ -1,8 +1,6 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const menuBtn = document.querySelector('.menu-btn');
   const optionsDropdown = document.getElementById('options-dropdown');
-  
   const searchEngineRadios = document.querySelectorAll('input[name="dropdown-search-engine"]');
   const wispInput = document.getElementById('input-wisp');
 
@@ -15,27 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let isDropdownOpen = false;
 
-  // Default settings if none exist
   if (!localStorage.getItem('glint_search_engine')) {
     localStorage.setItem('glint_search_engine', 'duckduckgo');
   }
   if (!localStorage.getItem('glint_wisp')) {
     localStorage.setItem('glint_wisp', '');
   }
-
-  loadSettings();
-
-  // Dropdown toggle
-  menuBtn.addEventListener('click', toggleDropdown);
-  document.addEventListener('click', handleOutsideClick);
-  
-  // Search engine change
-  searchEngineRadios.forEach(radio => {
-    radio.addEventListener('change', handleSearchEngineChange);
-  });
-
-  // Wisp input change
-  wispInput.addEventListener('input', handleWispChange);
 
   function toggleDropdown(event) {
     event.stopPropagation();
@@ -78,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedSearchEngine = localStorage.getItem('glint_search_engine') || 'duckduckgo';
     const savedWisp = localStorage.getItem('glint_wisp') || '';
 
-    // Set search engine radio
     searchEngineRadios.forEach(radio => {
       radio.checked = false;
     });
@@ -87,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
       radioToCheck.checked = true;
     }
 
-    // Set wisp input
     wispInput.value = savedWisp;
 
     updateGlobalSettings();
@@ -108,5 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return null;
   }
-});
 
+  menuBtn.addEventListener('click', toggleDropdown);
+  document.addEventListener('click', handleOutsideClick);
+  
+  searchEngineRadios.forEach(radio => {
+    radio.addEventListener('change', handleSearchEngineChange);
+  });
+
+  wispInput.addEventListener('input', handleWispChange);
+
+  loadSettings();
+});

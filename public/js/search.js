@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const searchTerm = mainSearchInput.value.trim();
+      if (addressBarInput) {
+        addressBarInput.value = searchTerm;
+      }
       processSearch(searchTerm);
     }
   });
@@ -58,6 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('glint:settings-updated', () => {
-    console.log('Search settings updated');
+    // settings updated
   });
-}); 
+});

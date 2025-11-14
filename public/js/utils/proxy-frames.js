@@ -10,7 +10,7 @@ function createProxyFrame(tabId, container) {
   container.appendChild(frame);
 
   frame.classList.add('loading');
-  
+
   const defaultOnload = () => {
     frame.classList.remove('loading');
     window.updateTabFavicon(tabId, frame);
@@ -21,7 +21,7 @@ function createProxyFrame(tabId, container) {
         const currentURL = frameWindow.location.href;
         window.updateAddressBar(currentURL, tabId);
         window.updateTabFaviconForUrl(tabId, currentURL);
-        
+
         const tabs = window.tabs || {};
         if (tabs[tabId] && !tabs[tabId].isNewTab && frame.src) {
           if (tabs[tabId]?.navigationMonitor) {
@@ -33,7 +33,7 @@ function createProxyFrame(tabId, container) {
     } catch (e) {
     }
   };
-  
+
   frame.onload = defaultOnload;
 
   return frame;
@@ -42,28 +42,28 @@ function createProxyFrame(tabId, container) {
 function startIframeNavigationMonitor(iframe, tabId) {
   const tabs = window.tabs || {};
   let lastUrl = '';
-  
+
   const checkForNavigation = () => {
     try {
       const frameWindow = iframe.contentWindow;
       if (frameWindow && tabs[tabId]) {
         const currentURL = frameWindow.location.href;
-        
+
         if (currentURL !== lastUrl) {
           lastUrl = currentURL;
           window.updateAddressBar(currentURL, tabId);
           window.updateTabFaviconForUrl(tabId, currentURL);
-          
+
           if (tabs[tabId]) {
             const originalUrl = window.getOriginalUrl(currentURL);
             tabs[tabId].url = originalUrl;
             tabs[tabId].title = window.getWebsiteName(originalUrl);
-            
+
             const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);
             if (tabTitle) {
               tabTitle.textContent = tabs[tabId].title;
             }
-            
+
             window.saveTabsToStorage();
           }
         }
@@ -71,12 +71,12 @@ function startIframeNavigationMonitor(iframe, tabId) {
     } catch (e) {
     }
   };
-  
+
   const monitorInterval = setInterval(checkForNavigation, 500);
-  
+
   if (!tabs[tabId]) tabs[tabId] = {};
   tabs[tabId].navigationMonitor = monitorInterval;
-  
+
   checkForNavigation();
 }
 

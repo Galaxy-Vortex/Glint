@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tabs = {};
   let activeTabId = 'newtab';
   let tabCounter = 1;
-  
+
   window.tabs = tabs;
   window.activeTabId = activeTabId;
   window.tabCounter = tabCounter;
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     isNewTab: true,
     isHistoryNavigation: false
   };
-  
+
   window.initTabHistory('newtab');
 
   const proxyFramesContainer = document.createElement('div');
@@ -65,13 +65,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const restoreTabsAfterInit = async () => {
     await new Promise(resolve => setTimeout(resolve, 200));
-    
+
     const result = window.restoreTabsFromStorage(
       window.createTabElement,
       window.initializeTab,
       (tabId) => window.createProxyFrame(tabId, proxyFramesContainer)
     );
-    
+
     activeTabId = result.activeTabId || 'newtab';
     window.activeTabId = activeTabId;
 
@@ -80,19 +80,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const prevSave = window.saveTabsToStorage;
-    window.saveTabsToStorage = () => {};
+    window.saveTabsToStorage = () => { };
     window.setActiveTab(activeTabId);
     window.saveTabsToStorage = prevSave;
-    
+
     window.updateTabDividers();
-    
+
     for (const [tabId, tabData] of Object.entries(tabs)) {
       if (tabData.pendingUrl) {
         const url = tabData.pendingUrl;
         delete tabData.pendingUrl;
-        
+
         const originalUrl = window.getOriginalUrl(url);
-        
+
         setTimeout(() => {
           const proxyFrame = document.getElementById(`proxy-frame-${tabId}`);
           if (proxyFrame && window.scramjet && originalUrl) {
@@ -101,50 +101,50 @@ document.addEventListener("DOMContentLoaded", async () => {
                 setTimeout(attemptRestoreNavigation, 100);
                 return;
               }
-              
+
               try {
                 let urlToEncode = originalUrl;
-                
+
                 if (urlToEncode.includes('/scramjet/') || urlToEncode.includes(location.origin + '/scramjet/')) {
                   const decoded = window.getOriginalUrl(urlToEncode);
                   if (decoded && (decoded.startsWith('http://') || decoded.startsWith('https://'))) {
                     urlToEncode = decoded;
                   }
                 }
-                
+
                 proxyFrame.classList.add('loading');
-                
+
                 if (tabId === activeTabId) {
                   newTabPage.style.display = 'none';
                   proxyFramesContainer.style.pointerEvents = 'auto';
                   proxyFramesContainer.style.zIndex = '10';
-                  
+
                   document.querySelectorAll('.proxy-frame').forEach(frame => {
                     frame.style.display = frame.id === `proxy-frame-${tabId}` ? 'block' : 'none';
                   });
                 }
-                
+
                 const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
-                
+
                 tabs[tabId].url = originalUrl;
                 tabs[tabId].isHistoryNavigation = true;
-                
+
                 proxyFrame.onload = () => {
                   proxyFrame.classList.remove('loading');
                   window.updateTabFavicon(tabId, proxyFrame);
-                  
+
                   if (tabs[tabId]?.navigationMonitor) {
                     clearInterval(tabs[tabId].navigationMonitor);
                   }
                   window.startIframeNavigationMonitor(proxyFrame, tabId);
-                  
+
                   try {
                     const frameWindow = proxyFrame.contentWindow;
                     if (frameWindow) {
                       const currentURL = frameWindow.location.href;
                       window.updateAddressBar(currentURL, tabId);
                       window.updateTabFaviconForUrl(tabId, currentURL);
-                      
+
                       const actualOriginalUrl = window.getOriginalUrl(currentURL);
                       if (tabs[tabId]) {
                         tabs[tabId].url = actualOriginalUrl;
@@ -154,13 +154,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                   } catch (e) {
                   }
                 };
-                
+
                 proxyFrame.onerror = () => {
                   proxyFrame.classList.remove('loading');
                   tabs[tabId].isHistoryNavigation = false;
                   console.error('Error loading restored tab:', tabId);
                 };
-                
+
                 proxyFrame.src = encodedUrl;
               } catch (err) {
                 console.error('Error restoring tab navigation:', err);
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 tabs[tabId].isHistoryNavigation = false;
               }
             };
-            
+
             attemptRestoreNavigation();
           }
         }, 200);

@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.glintSettings.searchEngine = localStorage.getItem('glint_search_engine') || 'duckduckgo';
     window.glintSettings.searchEngines = searchEngines;
     window.glintSettings.wisp = localStorage.getItem('glint_wisp') || '';
-    
+
     window.dispatchEvent(new CustomEvent('glint:settings-updated'));
   }
 
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   menuBtn.addEventListener('click', toggleDropdown);
   document.addEventListener('click', handleOutsideClick);
-  
+
   searchEngineRadios.forEach(radio => {
     radio.addEventListener('change', handleSearchEngineChange);
   });

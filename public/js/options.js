@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuBtn = document.querySelector('.menu-btn');
   const optionsDropdown = document.getElementById('options-dropdown');
   const searchEngineRadios = document.querySelectorAll('input[name="dropdown-search-engine"]');
+  const themeRadios = document.querySelectorAll('input[name="theme-selector"]');
   const wispInput = document.getElementById('input-wisp');
 
   const searchEngines = {
@@ -15,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!localStorage.getItem('glint_search_engine')) {
     localStorage.setItem('glint_search_engine', 'duckduckgo');
+  }
+  if (!localStorage.getItem('glint_theme')) {
+    localStorage.setItem('glint_theme', 'dark');
   }
   if (!localStorage.getItem('glint_wisp')) {
     localStorage.setItem('glint_wisp', '');
@@ -51,6 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGlobalSettings();
   }
 
+  function handleThemeChange(event) {
+    const selectedTheme = event.target.value;
+    localStorage.setItem('glint_theme', selectedTheme);
+    if (window.applyTheme) {
+      window.applyTheme(selectedTheme);
+    }
+  }
+
   function handleWispChange(event) {
     const wispValue = event.target.value.trim();
     localStorage.setItem('glint_wisp', wispValue);
@@ -59,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadSettings() {
     const savedSearchEngine = localStorage.getItem('glint_search_engine') || 'duckduckgo';
+    const savedTheme = localStorage.getItem('glint_theme') || 'dark';
     const savedWisp = localStorage.getItem('glint_wisp') || '';
 
     searchEngineRadios.forEach(radio => {
@@ -67,6 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const radioToCheck = document.getElementById(`dropdown-${savedSearchEngine}`);
     if (radioToCheck) {
       radioToCheck.checked = true;
+    }
+
+    themeRadios.forEach(radio => {
+      radio.checked = false;
+    });
+    const themeRadioToCheck = document.getElementById(`theme-${savedTheme}`);
+    if (themeRadioToCheck) {
+      themeRadioToCheck.checked = true;
     }
 
     wispInput.value = savedWisp;
@@ -95,6 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchEngineRadios.forEach(radio => {
     radio.addEventListener('change', handleSearchEngineChange);
+  });
+
+  themeRadios.forEach(radio => {
+    radio.addEventListener('change', handleThemeChange);
   });
 
   wispInput.addEventListener('input', handleWispChange);

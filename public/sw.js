@@ -30,6 +30,17 @@ self.addEventListener("activate", (event) => {
 
 async function handleRequest(event) {
   const url = new URL(event.request.url);
+  const adDomains = [
+    'effectivegatecpm.com',
+    'weirdopt.com',
+    'wayfarerorthodox.com',
+    'preferencenail.com',
+    'kettledroopingcontinuation.com'
+  ];
+  
+  if (adDomains.some(domain => url.hostname.includes(domain))) {
+    return await fetch(event.request);
+  }
   
   if (event.request.url.includes('favicon.ico') || 
       event.request.url.includes('apple-touch-icon') ||

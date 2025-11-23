@@ -1,10 +1,10 @@
-# Glint ✨
+# Glint
 
 <div align="center">
   <img src="./public/images/page.png" alt="Glint Logo" width="1000"">
 </div>
 
-## 🌐 Live Demo
+## Live Demo
 
 Try Glint now: https://glintapp.org/
 ## 🚀 Getting Started
@@ -30,12 +30,7 @@ Try Glint now: https://glintapp.org/
    npm start
    ```
 
-### Configuration
-The default port for Glint is `3000`. You can access it by visiting `localhost:3000` in your web browser.
-
-> **Note:** If port 3000 is already in use, you can change the port in the `app.js` file.
-
-## 🔗 Connect
+## Connect
 
 Join the [Hydra Network](https://discord.gg/jMsj6KJBSV) for additional links and updates!
 

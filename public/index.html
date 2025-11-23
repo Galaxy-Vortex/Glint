@@ -1,239 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Glint Browser - A custom web proxy I built to bypass restrictions">
-  <meta property="og:title" content="Glint Browser">
-  <meta property="og:description" content="A custom web proxy to bypass restrictions">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://glintapp.org/images/page.png">
-  <meta property="og:image:alt" content="Glint Browser">
-  <meta property="og:url" content="https://glintapp.org">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Glint Browser">
-  <meta name="twitter:description" content="A custom web proxy to bypass restrictions">
-  <meta name="twitter:image" content="https://glintapp.org/images/page.png">
-  <title>Glint Browser</title>
-  <link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YCZFXTQFN3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-YCZFXTQFN3');
-  </script>
-  <script src="js/utils/url-utils.js" defer></script>
-  <script src="js/utils/favicon.js" defer></script>
-  <script src="js/utils/proxy-frames.js" defer></script>
-  <script src="js/tabs/tab-history.js" defer></script>
-  <script src="js/tabs/tab-storage.js" defer></script>
-  <script src="js/tabs/tab-dragging.js" defer></script>
-  <script src="js/tabs/tab-management.js" defer></script>
-  <script src="js/navigation/navigation.js" defer></script>
-  <script src="js/theme.js" defer></script>
-  <script src="js/main.js" defer></script>
-  <script src="js/search.js" defer></script>
-  <script src="js/proxy-config.js" defer></script>
-  <script src="js/options.js" defer></script>
-  <script src="js/register-sw.js" defer></script>
-  <!-- proxy deps -->
-  <script src="baremux/index.js" defer></script>
-  <script src="epoxy/index.js" defer></script>
-  <script src="scram/scramjet.all.js" defer></script>
-</head>
-
-<body>
-  <div class="browser">
-    <div class="browser-header">
-      <div class="tabs">
-        <div class="tab active" data-tab-id="newtab">
-          <div class="tab-favicon-placeholder">
-            <img src="images/logo.png" alt="Glint Logo" class="tab-logo">
-          </div>
-          <span class="tab-title">New Tab</span>
-          <span class="tab-close"><i class="fas fa-times"></i></span>
-        </div>
-        <div class="new-tab-btn">
-          <i class="fas fa-plus"></i>
-        </div>
-      </div>
-    </div>
-    <div class="toolbar">
-      <div class="navigation-controls">
-        <button class="nav-btn back-btn" aria-label="Go back"><i class="fas fa-arrow-left"></i></button>
-        <button class="nav-btn forward-btn" aria-label="Go forward"><i class="fas fa-arrow-right"></i></button>
-        <button class="nav-btn reload-btn" aria-label="Reload page"><i class="fas fa-redo"></i></button>
-      </div>
-      <div class="address-bar-container">
-        <span class="address-bar-lock"><i class="fas fa-lock"></i></span>
-        <input type="text" class="address-bar-input" placeholder="Search or enter a URL">
-      </div>
-      <div class="toolbar-actions">
-        <button class="action-btn menu-btn" aria-label="More options"><i class="fas fa-ellipsis-v"></i></button>
-      </div>
-    </div>
-    <div class="browser-content">
-      <div class="new-tab-page">
-        <div class="new-tab-container">
-          <div class="hero-section">
-            <div class="logo-container">
-              <img src="images/logo.png" alt="Glint Logo" class="main-logo">
-            </div>
-
-            <div class="search-container">
-              <div class="search-bar">
-                <div class="search-icon">
-                  <i class="fas fa-search"></i>
-                </div>
-                <input type="text" class="main-search-input" placeholder="Search or enter a site URL">
-              </div>
-            </div>
-          </div>
-
-          <div class="features-container">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-shield-alt"></i>
-              </div>
-              <div class="feature-content">
-                <h3>Private Browsing</h3>
-                <p>Your activity stays completely private</p>
-              </div>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-bolt"></i>
-              </div>
-              <div class="feature-content">
-                <h3>Fast & Responsive</h3>
-                <p>Optimized codebase for smooth browsing - even on slower connections</p>
-              </div>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-globe"></i>
-              </div>
-              <div class="feature-content">
-                <h3>Bypass Restrictions</h3>
-                <p>Access blocked content</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="footer">
-            <p>Developed by <a href="https://discord.gg/p7dwCGwd" class="network" target="_blank">Hydra
-                Network</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="options-dropdown" id="options-dropdown">
-    <div class="dropdown-section-header">
-      <i class="fas fa-search"></i>
-      <span>Search Engine</span>
-    </div>
-    <div class="dropdown-section">
-      <div class="search-engine-options">
-        <div class="dropdown-item search-option" data-engine="google">
-          <input type="radio" id="dropdown-google" name="dropdown-search-engine" value="google">
-          <label for="dropdown-google">Google</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="bing">
-          <input type="radio" id="dropdown-bing" name="dropdown-search-engine" value="bing">
-          <label for="dropdown-bing">Bing</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="duckduckgo">
-          <input type="radio" id="dropdown-duckduckgo" name="dropdown-search-engine" value="duckduckgo">
-          <label for="dropdown-duckduckgo">DuckDuckGo</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="yahoo">
-          <input type="radio" id="dropdown-yahoo" name="dropdown-search-engine" value="yahoo">
-          <label for="dropdown-yahoo">Yahoo</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="dropdown-section-header">
-      <i class="fas fa-palette"></i>
-      <span>Theme</span>
-    </div>
-    <div class="dropdown-section">
-      <div class="theme-options">
-        <div class="dropdown-item theme-option" data-theme="dark">
-          <input type="radio" id="theme-dark" name="theme-selector" value="dark">
-          <label for="theme-dark">Dark</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="light">
-          <input type="radio" id="theme-light" name="theme-selector" value="light">
-          <label for="theme-light">Light</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="blue">
-          <input type="radio" id="theme-blue" name="theme-selector" value="blue">
-          <label for="theme-blue">Blue</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="purple">
-          <input type="radio" id="theme-purple" name="theme-selector" value="purple">
-          <label for="theme-purple">Purple</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="green">
-          <input type="radio" id="theme-green" name="theme-selector" value="green">
-          <label for="theme-green">Green</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="orange">
-          <input type="radio" id="theme-orange" name="theme-selector" value="orange">
-          <label for="theme-orange">Orange</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="pink">
-          <input type="radio" id="theme-pink" name="theme-selector" value="pink">
-          <label for="theme-pink">Pink</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="dropdown-section-header">
-      <i class="fas fa-server"></i>
-      <span>Proxy</span>
-    </div>
-
-    <div class="dropdown-section wisp-input-container">
-      <label for="input-wisp">Wisp URL:</label>
-      <input type="text" id="input-wisp" name="input-wisp" placeholder="wss://example.com/wisp/" />
-    </div>
-
-  </div>
-  <script>
-    (function() {
-      try {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://pl28100772.effectivegatecpm.com/ff/cd/10/ffcd1055c77bcce8220ee64ccd7f2244.js';
-        script.crossOrigin = 'anonymous';
-        script.async = true;
-        script.onerror = function() {
-          const fallbackScript = document.createElement('script');
-          fallbackScript.type = 'text/javascript';
-          fallbackScript.src = '//pl28100772.effectivegatecpm.com/ff/cd/10/ffcd1055c77bcce8220ee64ccd7f2244.js';
-          fallbackScript.async = true;
-          document.head.appendChild(fallbackScript);
-        };
-        document.head.appendChild(script);
-      } catch(e) {
-        console.warn('Addstera script load error:', e);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Glint Browser - A custom web proxy I built to bypass restrictions"
+    />
+    <meta property="og:title" content="Glint Browser" />
+    <meta
+      property="og:description"
+      content="A custom web proxy to bypass restrictions"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://glintapp.org/images/page.png" />
+    <meta property="og:image:alt" content="Glint Browser" />
+    <meta property="og:url" content="https://glintapp.org" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Glint Browser" />
+    <meta
+      name="twitter:description"
+      content="A custom web proxy to bypass restrictions"
+    />
+    <meta name="twitter:image" content="https://glintapp.org/images/page.png" />
+    <title>Glint Browser</title>
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-YCZFXTQFN3"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
       }
-    })();
-  </script>
+      gtag("js", new Date());
+      gtag("config", "G-YCZFXTQFN3");
+    </script>
+    <script src="js/utils/url-utils.js" defer></script>
+    <script src="js/utils/favicon.js" defer></script>
+    <script src="js/utils/proxy-frames.js" defer></script>
+    <script src="js/tabs/tab-history.js" defer></script>
+    <script src="js/tabs/tab-storage.js" defer></script>
+    <script src="js/tabs/tab-dragging.js" defer></script>
+    <script src="js/tabs/tab-management.js" defer></script>
+    <script src="js/navigation/navigation.js" defer></script>
+    <script src="js/theme.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/proxy-config.js" defer></script>
+    <script src="js/options.js" defer></script>
+    <script src="js/register-sw.js" defer></script>
+    <!-- proxy deps -->
+    <script src="baremux/index.js" defer></script>
+    <script src="epoxy/index.js" defer></script>
+    <script src="scram/scramjet.all.js" defer></script>
+  </head>
 
-</body>
+  <body>
+    <div class="browser">
+      <div class="browser-header">
+        <div class="tabs">
+          <div class="tab active" data-tab-id="newtab">
+            <div class="tab-favicon-placeholder">
+              <img src="images/logo.png" alt="Glint Logo" class="tab-logo" />
+            </div>
+            <span class="tab-title">New Tab</span>
+            <span class="tab-close"><i class="fas fa-times"></i></span>
+          </div>
+          <div class="new-tab-btn">
+            <i class="fas fa-plus"></i>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="navigation-controls">
+          <button class="nav-btn back-btn" aria-label="Go back">
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          <button class="nav-btn forward-btn" aria-label="Go forward">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="nav-btn reload-btn" aria-label="Reload page">
+            <i class="fas fa-redo"></i>
+          </button>
+        </div>
+        <div class="address-bar-container">
+          <span class="address-bar-lock"><i class="fas fa-lock"></i></span>
+          <input
+            type="text"
+            class="address-bar-input"
+            placeholder="Search or enter a URL"
+          />
+        </div>
+        <div class="toolbar-actions">
+          <button class="action-btn menu-btn" aria-label="More options">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+        </div>
+      </div>
+      <div class="browser-content">
+        <div class="new-tab-page">
+          <div class="new-tab-container">
+            <div class="hero-section">
+              <div class="logo-container">
+                <img src="images/logo.png" alt="Glint Logo" class="main-logo" />
+              </div>
 
+              <div class="search-container">
+                <div class="search-bar">
+                  <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                  </div>
+                  <input
+                    type="text"
+                    class="main-search-input"
+                    placeholder="Search or enter a site URL"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="features-container">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="feature-content">
+                  <h3>Private Browsing</h3>
+                  <p>Your activity stays completely private</p>
+                </div>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-bolt"></i>
+                </div>
+                <div class="feature-content">
+                  <h3>Fast & Responsive</h3>
+                  <p>
+                    Optimized codebase for smooth browsing - even on slower
+                    connections
+                  </p>
+                </div>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-globe"></i>
+                </div>
+                <div class="feature-content">
+                  <h3>Bypass Restrictions</h3>
+                  <p>Access blocked content</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="footer">
+              <p>
+                Developed by
+                <a
+                  href="https://discord.gg/p7dwCGwd"
+                  class="network"
+                  target="_blank"
+                  >Hydra Network</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="options-dropdown" id="options-dropdown">
+      <div class="dropdown-section-header">
+        <i class="fas fa-search"></i>
+        <span>Search Engine</span>
+      </div>
+      <div class="dropdown-section">
+        <div class="search-engine-options">
+          <div class="dropdown-item search-option" data-engine="google">
+            <input
+              type="radio"
+              id="dropdown-google"
+              name="dropdown-search-engine"
+              value="google"
+            />
+            <label for="dropdown-google">Google</label>
+          </div>
+          <div class="dropdown-item search-option" data-engine="bing">
+            <input
+              type="radio"
+              id="dropdown-bing"
+              name="dropdown-search-engine"
+              value="bing"
+            />
+            <label for="dropdown-bing">Bing</label>
+          </div>
+          <div class="dropdown-item search-option" data-engine="duckduckgo">
+            <input
+              type="radio"
+              id="dropdown-duckduckgo"
+              name="dropdown-search-engine"
+              value="duckduckgo"
+            />
+            <label for="dropdown-duckduckgo">DuckDuckGo</label>
+          </div>
+          <div class="dropdown-item search-option" data-engine="yahoo">
+            <input
+              type="radio"
+              id="dropdown-yahoo"
+              name="dropdown-search-engine"
+              value="yahoo"
+            />
+            <label for="dropdown-yahoo">Yahoo</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="dropdown-section-header">
+        <i class="fas fa-palette"></i>
+        <span>Theme</span>
+      </div>
+      <div class="dropdown-section">
+        <div class="theme-options">
+          <div class="dropdown-item theme-option" data-theme="dark">
+            <input
+              type="radio"
+              id="theme-dark"
+              name="theme-selector"
+              value="dark"
+            />
+            <label for="theme-dark">Dark</label>
+          </div>
+          <div class="dropdown-item theme-option" data-theme="light">
+            <input
+              type="radio"
+              id="theme-light"
+              name="theme-selector"
+              value="light"
+            />
+            <label for="theme-light">Light</label>
+          </div>
+          <div class="dropdown-item theme-option" data-theme="blue">
+            <input
+              type="radio"
+              id="theme-blue"
+              name="theme-selector"
+              value="blue"
+            />
+            <label for="theme-blue">Blue</label>
+          </div>
+          <div class="dropdown-item theme-option" data-theme="purple">
+            <input
+              type="radio"
+              id="theme-purple"
+              name="theme-selector"
+              value="purple"
+            />
+            <label for="theme-purple">Purple</label>
+          </div>
+          <div class="dropdown-item theme-option" data-theme="green">
+            <input
+              type="radio"
+              id="theme-green"
+              name="theme-selector"
+              value="green"
+            />
+            <label for="theme-green">Green</label>
+          </div>
+          <div class="dropdown-item theme-option" data-theme="orange">
+            <input
+              type="radio"
+              id="theme-orange"
+              name="theme-selector"
+              value="orange"
+            />
+            <label for="theme-orange">Orange</label>
+          </div>
+          <div class="dropdown-item theme-option" data-theme="pink">
+            <input
+              type="radio"
+              id="theme-pink"
+              name="theme-selector"
+              value="pink"
+            />
+            <label for="theme-pink">Pink</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="dropdown-section-header">
+        <i class="fas fa-server"></i>
+        <span>Proxy</span>
+      </div>
+
+      <div class="dropdown-section wisp-input-container">
+        <label for="input-wisp">Wisp URL:</label>
+        <input
+          type="text"
+          id="input-wisp"
+          name="input-wisp"
+          placeholder="wss://example.com/wisp/"
+        />
+      </div>
+    </div>
+  </body>
 </html>

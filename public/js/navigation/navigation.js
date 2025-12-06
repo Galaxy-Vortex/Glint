@@ -128,13 +128,14 @@ function navigateTo(url, tabId) {
       }
       tabs[tabId].isHistoryNavigation = false;
 
+      if (tabs[tabId]?.navigationMonitor) {
+        clearInterval(tabs[tabId].navigationMonitor);
+      }
+
       proxyFrame.onload = () => {
         proxyFrame.classList.remove('loading');
         window.updateTabFavicon(tabId, proxyFrame);
 
-        if (tabs[tabId]?.navigationMonitor) {
-          clearInterval(tabs[tabId].navigationMonitor);
-        }
         window.startIframeNavigationMonitor(proxyFrame, tabId);
 
         try {
@@ -231,13 +232,14 @@ function initNavigationControls() {
                 tabTitle.textContent = tabs[activeTabId].title;
               }
               
+              if (tabs[activeTabId]?.navigationMonitor) {
+                clearInterval(tabs[activeTabId].navigationMonitor);
+              }
+
               proxyFrame.onload = () => {
                 proxyFrame.classList.remove('loading');
                 window.updateTabFavicon(activeTabId, proxyFrame);
                 
-                if (tabs[activeTabId]?.navigationMonitor) {
-                  clearInterval(tabs[activeTabId].navigationMonitor);
-                }
                 window.startIframeNavigationMonitor(proxyFrame, activeTabId);
                 
                 try {
@@ -310,13 +312,14 @@ function initNavigationControls() {
                 tabTitle.textContent = tabs[activeTabId].title;
               }
               
+              if (tabs[activeTabId]?.navigationMonitor) {
+                clearInterval(tabs[activeTabId].navigationMonitor);
+              }
+
               proxyFrame.onload = () => {
                 proxyFrame.classList.remove('loading');
                 window.updateTabFavicon(activeTabId, proxyFrame);
                 
-                if (tabs[activeTabId]?.navigationMonitor) {
-                  clearInterval(tabs[activeTabId].navigationMonitor);
-                }
                 window.startIframeNavigationMonitor(proxyFrame, activeTabId);
                 
                 try {
@@ -384,14 +387,15 @@ function initNavigationControls() {
             const urlToEncode = window.getOriginalUrl(originalUrl);
             const encodedUrl = window.scramjet.encodeUrl(urlToEncode);
             
-            proxyFrame.onload = () => {
-              proxyFrame.classList.remove('loading');
-              window.updateTabFavicon(activeTabId, proxyFrame);
-              
-              if (tabs[activeTabId]?.navigationMonitor) {
+            if (tabs[activeTabId]?.navigationMonitor) {
                 clearInterval(tabs[activeTabId].navigationMonitor);
               }
-              window.startIframeNavigationMonitor(proxyFrame, activeTabId);
+
+              proxyFrame.onload = () => {
+                proxyFrame.classList.remove('loading');
+                window.updateTabFavicon(activeTabId, proxyFrame);
+                
+                window.startIframeNavigationMonitor(proxyFrame, activeTabId);
               
               try {
                 const frameWindow = proxyFrame.contentWindow;

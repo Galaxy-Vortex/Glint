@@ -57,6 +57,11 @@ function startIframeNavigationMonitor(iframe, tabId) {
           if (tabs[tabId]) {
             const originalUrl = window.getOriginalUrl(currentURL);
             tabs[tabId].url = originalUrl;
+
+            if (!tabs[tabId].isHistoryNavigation) {
+              window.addToHistory(tabId, originalUrl);
+            }
+
             tabs[tabId].title = window.getWebsiteName(originalUrl);
 
             const tabTitle = document.querySelector(`.tab[data-tab-id="${tabId}"] .tab-title`);

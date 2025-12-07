@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchEngineRadios = document.querySelectorAll('input[name="dropdown-search-engine"]');
   const themeRadios = document.querySelectorAll('input[name="theme-selector"]');
   const wispInput = document.getElementById('input-wisp');
+  const tabCloakBtn = document.getElementById('tab-cloak-btn');
 
   const searchEngines = {
     google: 'https://www.google.com/search?q=%s',
@@ -111,6 +112,40 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
+  function activateTabCloak() {
+    const currentUrl = window.location.href;
+    const newWindow = window.open('about:blank', '_blank');
+    
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Google</title>
+          <link rel="icon" href="https://www.google.com/favicon.ico">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            html, body { height: 100%; width: 100%; overflow: hidden; }
+            iframe { 
+              width: 100%; 
+              height: 100%; 
+              border: none; 
+              position: fixed;
+              top: 0;
+              left: 0;
+            }
+          </style>
+        </head>
+        <body>
+          <iframe src="${currentUrl}" allowfullscreen></iframe>
+        </body>
+        </html>
+      `);
+      newWindow.document.close();
+      window.close();
+    }
+  }
+
   menuBtn.addEventListener('click', toggleDropdown);
   document.addEventListener('click', handleOutsideClick);
 
@@ -123,6 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   wispInput.addEventListener('input', handleWispChange);
+
+  if (tabCloakBtn) {
+    tabCloakBtn.addEventListener('click', activateTabCloak);
+  }
 
   loadSettings();
 });

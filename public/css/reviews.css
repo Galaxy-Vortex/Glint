@@ -26,12 +26,12 @@
   display: flex;
   gap: 16px;
   width: fit-content;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .review-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-hover);
   border-radius: 16px;
   padding: 20px;
   width: 260px;

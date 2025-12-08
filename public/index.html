@@ -46,6 +46,7 @@
   <script src="js/notifications.js" defer=""></script>
   <script src="js/register-sw.js" defer=""></script>
   <script src="js/reviews-carousel.js" defer=""></script>
+  <script src="js/onboarding.js" defer=""></script>
   <!-- proxy deps -->
   <script src="baremux/index.js" defer=""></script>
   <script src="epoxy/index.js" defer=""></script>
@@ -301,31 +302,7 @@
       <span>Theme</span>
     </div>
     <div class="dropdown-section">
-      <div class="theme-options">
-        <div class="dropdown-item theme-option" data-theme="dark">
-          <input type="radio" id="theme-dark" name="theme-selector" value="dark">
-          <label for="theme-dark">Dark</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="blue">
-          <input type="radio" id="theme-blue" name="theme-selector" value="blue">
-          <label for="theme-blue">Blue</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="purple">
-          <input type="radio" id="theme-purple" name="theme-selector" value="purple">
-          <label for="theme-purple">Purple</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="green">
-          <input type="radio" id="theme-green" name="theme-selector" value="green">
-          <label for="theme-green">Green</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="orange">
-          <input type="radio" id="theme-orange" name="theme-selector" value="orange">
-          <label for="theme-orange">Orange</label>
-        </div>
-        <div class="dropdown-item theme-option" data-theme="pink">
-          <input type="radio" id="theme-pink" name="theme-selector" value="pink">
-          <label for="theme-pink">Pink</label>
-        </div>
+      <div class="theme-options" id="theme-options-container">
       </div>
     </div>
 
@@ -346,6 +323,13 @@
       <button class="notifications-close"><i class="fas fa-times"></i></button>
     </div>
     <div class="notifications-list">
+      <div class="notification-card">
+        <div class="notification-content">
+          <h3 class="notification-title">New Onboarding & Themes</h3>
+          <p class="notification-desc">fresh new onboarding and themes!</p>
+          <span class="notification-date">December 8, 2025</span>
+        </div>
+      </div>
       <div class="notification-card">
         <div class="notification-content">
           <h3 class="notification-title">Glint v2 Release</h3>

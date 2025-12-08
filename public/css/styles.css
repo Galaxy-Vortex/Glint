@@ -1082,9 +1082,34 @@ body.dragging {
   color: var(--accent);
 }
 
-.search-engine-options,
-.theme-options {
+.search-engine-options {
   padding: 0 8px;
+}
+
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding: 12px 16px;
+}
+
+.theme-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-circle:hover {
+  transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.theme-circle.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 .cloak-btn {
@@ -1126,8 +1151,7 @@ body.dragging {
   transition: color 0.2s ease;
 }
 
-.search-option,
-.theme-option {
+.search-option {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1138,14 +1162,12 @@ body.dragging {
   transition: all 0.2s ease;
 }
 
-.search-option:hover,
-.theme-option:hover {
+.search-option:hover {
   background-color: var(--bg-hover);
   transform: translateX(2px);
 }
 
-.search-option input[type="radio"],
-.theme-option input[type="radio"] {
+.search-option input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
   width: 36px;
@@ -1160,18 +1182,15 @@ body.dragging {
   border: none;
 }
 
-.search-option input[type="radio"]:hover,
-.theme-option input[type="radio"]:hover {
+.search-option input[type="radio"]:hover {
   background-color: var(--bg-hover);
 }
 
-.search-option input[type="radio"]:checked,
-.theme-option input[type="radio"]:checked {
+.search-option input[type="radio"]:checked {
   background-color: var(--accent);
 }
 
-.search-option input[type="radio"]::before,
-.theme-option input[type="radio"]::before {
+.search-option input[type="radio"]::before {
   content: '';
   position: absolute;
   top: 2px;
@@ -1184,22 +1203,11 @@ body.dragging {
   transform: translateX(0);
 }
 
-.search-option input[type="radio"]:checked::before,
-.theme-option input[type="radio"]:checked::before {
+.search-option input[type="radio"]:checked::before {
   transform: translateX(16px);
 }
 
-@keyframes switchToggle {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(16px);
-  }
-}
-
-.search-option label,
-.theme-option label {
+.search-option label {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -1208,8 +1216,7 @@ body.dragging {
   order: -1;
 }
 
-.search-option:hover label,
-.theme-option:hover label {
+.search-option:hover label {
   color: var(--text-primary);
 }
 
@@ -1608,6 +1615,347 @@ body.dragging {
 
 .notifications-overlay.active {
   display: block;
+}
+
+/* Onboarding - Immersive Carousel */
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  overflow: hidden;
+}
+
+.onboarding-overlay.active {
+  opacity: 1;
+}
+
+.onboarding-overlay.closing {
+  opacity: 0;
+}
+
+.onboarding-bg {
+  position: absolute;
+  inset: 0;
+  background: #0a0a0a;
+  transition: background 0.6s ease;
+}
+
+.onboarding-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  bottom: -10px;
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.onboarding-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  width: 100%;
+  max-width: 800px;
+  transform: translateY(30px);
+  transition: transform 0.5s ease;
+}
+
+.onboarding-overlay.active .onboarding-container {
+  transform: translateY(0);
+}
+
+.onboarding-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.onboarding-logo {
+  width: 70px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  margin-bottom: 20px;
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.onboarding-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  letter-spacing: -1px;
+}
+
+.title-gradient {
+  background: linear-gradient(135deg, #ffffff, #888888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: background 0.3s ease;
+}
+
+.onboarding-subtitle {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  font-weight: 400;
+}
+
+.onboarding-carousel {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 30px;
+  min-height: 240px;
+}
+
+.carousel-arrow {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.carousel-arrow:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 380px;
+  height: 200px;
+}
+
+.theme-card {
+  position: absolute;
+  width: 140px;
+  height: 180px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: scale(0.7) translateX(0);
+  pointer-events: none;
+}
+
+.theme-card.prev {
+  opacity: 0.5;
+  transform: scale(0.8) translateX(-120px);
+  pointer-events: auto;
+}
+
+.theme-card.next {
+  opacity: 0.5;
+  transform: scale(0.8) translateX(120px);
+  pointer-events: auto;
+}
+
+.theme-card.active {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.card-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 32px;
+  filter: blur(30px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.theme-card.active .card-glow {
+  opacity: 0.3;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.theme-card:hover .card-inner {
+  transform: translateY(-4px);
+}
+
+.theme-card.active .card-inner {
+  border-width: 4px;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+
+.carousel-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dots .dot:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.carousel-dots .dot.active {
+  background: #fff;
+  transform: scale(1.2);
+}
+
+.onboarding-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.onboarding-skip {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 14px 24px;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+
+.onboarding-skip:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.onboarding-continue {
+  background: #ffffff;
+  color: #000;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.onboarding-continue:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+.onboarding-continue i {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.onboarding-continue:hover i {
+  transform: translateX(4px);
+}
+
+@media (max-width: 600px) {
+  .onboarding-title {
+    font-size: 32px;
+  }
+  
+  .onboarding-subtitle {
+    font-size: 16px;
+  }
+  
+  .carousel-track {
+    width: 280px;
+    height: 180px;
+  }
+  
+  .theme-card {
+    width: 120px;
+    height: 150px;
+  }
+  
+  .theme-card.prev {
+    transform: scale(0.75) translateX(-90px);
+  }
+  
+  .theme-card.next {
+    transform: scale(0.75) translateX(90px);
+  }
+  
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .onboarding-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+  
+  .onboarding-continue {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 600px) {

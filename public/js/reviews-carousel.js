@@ -8,14 +8,17 @@
   let isPaused = false;
 
   let isDragging = false;
+  let isMouseOver = false;
   let startX = 0;
   let dragOffset = 0;
 
   if (wrapper) {
     wrapper.addEventListener('mouseenter', () => {
+      isMouseOver = true;
       if (!isDragging) isPaused = true;
     });
     wrapper.addEventListener('mouseleave', () => {
+      isMouseOver = false;
       if (!isDragging) isPaused = false;
     });
 
@@ -61,6 +64,7 @@
       if (isDragging) {
         isDragging = false;
         wrapper.style.cursor = 'grab';
+        isPaused = isMouseOver;
       }
     });
 

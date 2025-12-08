@@ -369,6 +369,7 @@ body.dragging {
   height: 48px;
   box-shadow: 0 2px 8px var(--shadow);
   position: relative;
+  border-bottom: 1px solid var(--border-color);
 }
 
 

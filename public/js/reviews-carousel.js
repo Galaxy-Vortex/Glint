@@ -7,13 +7,68 @@
   let position = 0;
   let isPaused = false;
 
+  let isDragging = false;
+  let startX = 0;
+  let dragOffset = 0;
+
   if (wrapper) {
-    wrapper.addEventListener('mouseenter', () => isPaused = true);
-    wrapper.addEventListener('mouseleave', () => isPaused = false);
+    wrapper.addEventListener('mouseenter', () => {
+      if (!isDragging) isPaused = true;
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      if (!isDragging) isPaused = false;
+    });
+
+    wrapper.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      isPaused = true;
+      startX = e.clientX;
+      dragOffset = 0;
+      wrapper.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      
+      const deltaX = startX - e.clientX;
+      dragOffset = deltaX;
+      startX = e.clientX;
+      
+      position += dragOffset;
+      
+      const firstCard = grid.firstElementChild;
+      const lastCard = grid.lastElementChild;
+      if (!firstCard || !lastCard) return;
+      
+      const cardWidth = firstCard.offsetWidth;
+      const gap = 16;
+      
+      if (position >= cardWidth + gap) {
+        position -= (cardWidth + gap);
+        grid.appendChild(firstCard);
+      }
+      
+      if (position < 0) {
+        position += (cardWidth + gap);
+        grid.insertBefore(lastCard, firstCard);
+      }
+      
+      grid.style.transform = `translateX(-${position}px)`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        wrapper.style.cursor = 'grab';
+      }
+    });
+
+    wrapper.style.cursor = 'grab';
   }
 
   function cycle() {
-    if (!isPaused) {
+    if (!isPaused && !isDragging) {
       position += speed;
       
       const firstCard = grid.firstElementChild;

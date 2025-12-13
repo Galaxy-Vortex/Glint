@@ -1707,7 +1707,6 @@ body.dragging {
   height: auto;
   filter: brightness(0) invert(1);
   margin-bottom: 20px;
-  animation: logoFloat 3s ease-in-out infinite;
 }
 
 @keyframes logoFloat {

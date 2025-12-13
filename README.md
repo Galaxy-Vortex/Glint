@@ -32,7 +32,7 @@ Try Glint now: https://glintapp.org/
 
 ## Connect
 
-Join the [Hydra Network](https://discord.gg/jMsj6KJBSV) for additional links and updates!
+Join the [Hydra Network](https://discord.gg/UFTf5rE5fE) for additional links and updates!
 
 ## ⚠️ Development Status
 

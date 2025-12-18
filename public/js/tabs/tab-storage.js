@@ -82,8 +82,10 @@ function restoreTabsFromStorage(createTabElement, initializeTab, createProxyFram
           
           createProxyFrame(tabId);
           
-          if (tabData.url && !tabData.isNewTab && (tabData.url.startsWith('http://') || tabData.url.startsWith('https://'))) {
-            tabs[tabId].pendingUrl = tabData.url;
+          if (tabData.url && !tabData.isNewTab) {
+            if (tabData.url.startsWith('http://') || tabData.url.startsWith('https://')) {
+              tabs[tabId].pendingUrl = tabData.url;
+            }
           }
         }
         

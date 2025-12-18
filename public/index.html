@@ -20,7 +20,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/reviews.css">
-  <link rel="stylesheet" href="css/games.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-YCZFXTQFN3"></script>
   <script>
@@ -48,7 +47,6 @@
   <script src="js/register-sw.js" defer=""></script>
   <script src="js/reviews-carousel.js" defer=""></script>
   <script src="js/onboarding.js" defer=""></script>
-  <script src="js/games.js" defer=""></script>
   <!-- proxy deps -->
   <script src="baremux/index.js" defer=""></script>
   <script src="epoxy/index.js" defer=""></script>
@@ -110,13 +108,6 @@
                 </div>
                 <input type="text" class="main-search-input" placeholder="Search or enter a site URL">
               </div>
-            </div>
-
-            <div class="nav-buttons">
-              <button class="nav-btn-large" id="open-games-btn">
-                <i class="fas fa-gamepad"></i>
-                <span>Games</span>
-              </button>
             </div>
           </div>
 
@@ -266,36 +257,6 @@
               Developed by
               <a href="https://discord.gg/UFTf5rE5fE" class="network" target="_blank">Hydra Network</a>
             </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="games-page" id="games-page">
-        <div class="games-container">
-          <div class="games-header">
-            <button class="games-back-btn" id="games-back-btn">
-              <i class="fas fa-arrow-left"></i>
-              <span>Back</span>
-            </button>
-            <div class="games-title-section">
-              <h1 class="games-title">Games</h1>
-              <p class="games-subtitle">Click on a game to play</p>
-            </div>
-            <div class="games-search-container">
-              <div class="games-search">
-                <i class="fas fa-search"></i>
-                <input type="text" class="games-search-input" id="games-search-input" placeholder="Search games...">
-              </div>
-            </div>
-          </div>
-
-          <div class="games-grid" id="games-grid">
-            <!-- Games will be populated by JavaScript -->
-          </div>
-
-          <div class="games-empty" id="games-empty">
-            <i class="fas fa-ghost"></i>
-            <p>No games found</p>
           </div>
         </div>
       </div>

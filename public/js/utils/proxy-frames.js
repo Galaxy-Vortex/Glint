@@ -5,8 +5,15 @@ function createProxyFrame(tabId, container) {
   frame.style.display = 'none';
   frame.style.border = 'none';
   frame.style.width = '100%';
-  frame.style.height = '100%';
+  frame.style.height = 'calc(100vh - 92px)';
+  frame.style.pointerEvents = 'auto';
+  frame.style.position = 'relative';
+  frame.style.zIndex = '10';
   frame.setAttribute('loading', 'lazy');
+  frame.setAttribute('scrolling', 'yes');
+  frame.setAttribute('allowtransparency', 'true');
+  frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
+  
   container.appendChild(frame);
 
   frame.classList.add('loading');
@@ -29,12 +36,66 @@ function createProxyFrame(tabId, container) {
           }
           window.startIframeNavigationMonitor(frame, tabId);
         }
+        
+        if (frameWindow.document && frameWindow.document.body) {
+          frameWindow.document.body.style.overflow = 'auto';
+          frameWindow.document.documentElement.style.overflow = 'auto';
+        }
       }
     } catch (e) {
     }
   };
 
   frame.onload = defaultOnload;
+  
+  const ensureScrollable = () => {
+    try {
+      if (frame.contentWindow && frame.contentWindow.document) {
+        const doc = frame.contentWindow.document;
+        if (doc.body) {
+          doc.body.style.overflow = 'auto';
+          doc.body.style.overflowY = 'auto';
+          doc.body.style.overflowX = 'auto';
+        }
+        if (doc.documentElement) {
+          doc.documentElement.style.overflow = 'auto';
+          doc.documentElement.style.overflowY = 'auto';
+          doc.documentElement.style.overflowX = 'auto';
+        }
+        
+        let styleEl = doc.getElementById('_glint-scroll-fix');
+        if (!styleEl) {
+          styleEl = doc.createElement('style');
+          styleEl.id = '_glint-scroll-fix';
+          styleEl.textContent = `
+            html, body {
+              overflow: auto !important;
+              overflow-y: auto !important;
+              overflow-x: auto !important;
+              height: auto !important;
+            }
+          `;
+          doc.head.appendChild(styleEl);
+        }
+      }
+    } catch (e) {
+    }
+  };
+  
+  frame.addEventListener('load', ensureScrollable);
+  
+  const checkInterval = setInterval(() => {
+    if (frame.contentWindow && frame.contentWindow.document && frame.contentWindow.document.body) {
+      ensureScrollable();
+      clearInterval(checkInterval);
+    }
+  }, 100);
+  
+  setTimeout(() => clearInterval(checkInterval), 5000);
+  
+  frame.style.overflow = 'auto';
+  frame.style.overflowY = 'auto';
+  frame.style.overflowX = 'auto';
 
   return frame;
 }

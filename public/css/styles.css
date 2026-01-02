@@ -481,6 +481,23 @@ body.dragging {
   isolation: isolate;
 }
 
+.browser-content.frame-active {
+  overflow: hidden !important;
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+}
+
+.browser-content.frame-active .new-tab-page {
+  display: none !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+.browser-content.frame-active #proxy-frames-container {
+  pointer-events: auto !important;
+  z-index: 100 !important;
+}
+
 .browser-content::before {
   content: '';
   position: absolute;
@@ -508,19 +525,28 @@ body.dragging {
   left: 0;
   z-index: 1;
   pointer-events: none;
+  overflow: visible;
+}
+
+#proxy-frames-container.active {
+  pointer-events: auto !important;
+  z-index: 100 !important;
 }
 
 .proxy-frame {
-  width: 100%;
-  height: calc(100vh - 92px);
-  border: none;
+  width: 100% !important;
+  height: calc(100vh - 92px) !important;
+  border: none !important;
   display: none;
   background-color: white;
-  pointer-events: auto;
+  pointer-events: auto !important;
+  overflow: auto !important;
+  position: relative;
+  z-index: 10;
 }
 
-.proxy-frame[style*="display: block"] {
-  z-index: 10;
+.proxy-frame.visible {
+  display: block !important;
 }
 
 
@@ -534,6 +560,11 @@ body.dragging {
   align-items: center;
   z-index: 5;
   pointer-events: auto;
+}
+
+.new-tab-page[style*="display: none"] {
+  pointer-events: none !important;
+  z-index: -1 !important;
 }
 
 .new-tab-container {

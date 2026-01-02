@@ -48,14 +48,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.initTabHistory('newtab');
 
-  const proxyFramesContainer = document.createElement('div');
-  proxyFramesContainer.id = 'proxy-frames-container';
+  let proxyFramesContainer = document.getElementById('proxy-frames-container');
+  if (!proxyFramesContainer) {
+    proxyFramesContainer = document.createElement('div');
+    proxyFramesContainer.id = 'proxy-frames-container';
+    browserContent.appendChild(proxyFramesContainer);
+  }
+  
   proxyFramesContainer.style.width = '100%';
   proxyFramesContainer.style.height = '100%';
   proxyFramesContainer.style.position = 'absolute';
   proxyFramesContainer.style.top = '0';
   proxyFramesContainer.style.left = '0';
-  browserContent.appendChild(proxyFramesContainer);
+  proxyFramesContainer.style.pointerEvents = 'none';
+  proxyFramesContainer.style.zIndex = '1';
 
   setTimeout(() => {
     if (window.createProxyFrame && !document.getElementById('proxy-frame-newtab')) {
@@ -116,11 +122,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (tabId === activeTabId) {
                   newTabPage.style.display = 'none';
-                  proxyFramesContainer.style.pointerEvents = 'auto';
-                  proxyFramesContainer.style.zIndex = '10';
+                  
+                  if (proxyFramesContainer) {
+                    proxyFramesContainer.classList.add('active');
+                    proxyFramesContainer.style.pointerEvents = 'auto';
+                    proxyFramesContainer.style.zIndex = '100';
+                  }
+                  
+                  if (browserContent) {
+                    browserContent.classList.add('frame-active');
+                  }
 
                   document.querySelectorAll('.proxy-frame').forEach(frame => {
-                    frame.style.display = frame.id === `proxy-frame-${tabId}` ? 'block' : 'none';
+                    const isActive = frame.id === `proxy-frame-${tabId}`;
+                    frame.style.display = isActive ? 'block' : 'none';
+                    
+                    if (isActive) {
+                      frame.classList.add('visible');
+                      frame.style.pointerEvents = 'auto';
+                      
+                      setTimeout(() => {
+                        try {
+                          frame.focus();
+                          if (frame.contentWindow) {
+                            frame.contentWindow.focus();
+                          }
+                        } catch (e) {
+                        }
+                      }, 50);
+                    } else {
+                      frame.classList.remove('visible');
+                    }
                   });
                 }
 

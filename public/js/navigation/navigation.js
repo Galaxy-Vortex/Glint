@@ -93,13 +93,39 @@ function navigateTo(url, tabId) {
     proxyFrame.classList.add('loading');
 
     try {
+      const browserContent = document.querySelector('.browser-content');
       newTabPage.style.display = 'none';
 
-      proxyFramesContainer.style.pointerEvents = 'auto';
-      proxyFramesContainer.style.zIndex = '10';
+      if (proxyFramesContainer) {
+        proxyFramesContainer.classList.add('active');
+        proxyFramesContainer.style.pointerEvents = 'auto';
+        proxyFramesContainer.style.zIndex = '100';
+      }
+      
+      if (browserContent) {
+        browserContent.classList.add('frame-active');
+      }
 
       document.querySelectorAll('.proxy-frame').forEach(frame => {
-        frame.style.display = frame.id === `proxy-frame-${tabId}` ? 'block' : 'none';
+        const isActive = frame.id === `proxy-frame-${tabId}`;
+        frame.style.display = isActive ? 'block' : 'none';
+        
+        if (isActive) {
+          frame.classList.add('visible');
+          frame.style.pointerEvents = 'auto';
+          
+          setTimeout(() => {
+            try {
+              frame.focus();
+              if (frame.contentWindow) {
+                frame.contentWindow.focus();
+              }
+            } catch (e) {
+            }
+          }, 50);
+        } else {
+          frame.classList.remove('visible');
+        }
       });
 
       let urlToEncode = originalUrl;

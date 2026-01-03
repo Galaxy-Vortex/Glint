@@ -1,5 +1,8 @@
 importScripts("/scram/scramjet.all.js");
 
+const CACHE_VERSION = 'glint-v1';
+const STATIC_CACHE = `${CACHE_VERSION}-static`;
+
 if (navigator.userAgent.includes("Firefox")) {
   Object.defineProperty(globalThis, "crossOriginIsolated", {
     value: true,
@@ -25,7 +28,21 @@ self.addEventListener("install", () => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    Promise.all([
+      clients.claim(),
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter((name) => name.startsWith('glint-') && name !== STATIC_CACHE)
+            .map((name) => {
+              console.log('Deleting old cache:', name);
+              return caches.delete(name);
+            })
+        );
+      })
+    ])
+  );
 });
 
 async function handleRequest(event) {

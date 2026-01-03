@@ -45,11 +45,15 @@ const fastify = Fastify({
 	logger: NODE_ENV === 'development'
 });
 
-// Serve static files from public directory
 fastify.register(fastifyStatic, {
 	root: publicDir,
 	prefix: "/",
 	decorateReply: true,
+	cacheControl: true,
+	maxAge: NODE_ENV === 'development' ? 0 : 3600000,
+	immutable: false,
+	etag: true,
+	lastModified: true,
 });
 
 // Main route - serves our browser interface

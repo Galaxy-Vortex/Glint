@@ -210,10 +210,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function registerSW() {
     try {
-      await navigator.serviceWorker.register('/sw.js', {});
+      if (!navigator.serviceWorker.controller) {
+        await navigator.serviceWorker.ready;
+      }
       return true;
     } catch (err) {
-      console.error('sw registration failed:', err);
+      console.error('sw ready check failed:', err);
       return false;
     }
   }

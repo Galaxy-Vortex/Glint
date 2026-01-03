@@ -16,10 +16,12 @@ async function initUVServiceWorker() {
       throw new Error('Service workers not supported');
     }
 
-    await navigator.serviceWorker.register('/sw.js', {});
+    if (!navigator.serviceWorker.controller) {
+      await navigator.serviceWorker.ready;
+    }
     return true;
   } catch (err) {
-    console.error('sw registration failed:', err);
+    console.error('sw ready check failed:', err);
     return false;
   }
 }

@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     proxyFramesContainer.id = 'proxy-frames-container';
     browserContent.appendChild(proxyFramesContainer);
   }
-  
+
   proxyFramesContainer.style.width = '100%';
   proxyFramesContainer.style.height = '100%';
   proxyFramesContainer.style.position = 'absolute';
@@ -122,13 +122,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (tabId === activeTabId) {
                   newTabPage.style.display = 'none';
-                  
+
                   if (proxyFramesContainer) {
                     proxyFramesContainer.classList.add('active');
                     proxyFramesContainer.style.pointerEvents = 'auto';
                     proxyFramesContainer.style.zIndex = '100';
                   }
-                  
+
                   if (browserContent) {
                     browserContent.classList.add('frame-active');
                   }
@@ -136,11 +136,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                   document.querySelectorAll('.proxy-frame').forEach(frame => {
                     const isActive = frame.id === `proxy-frame-${tabId}`;
                     frame.style.display = isActive ? 'block' : 'none';
-                    
+
                     if (isActive) {
                       frame.classList.add('visible');
                       frame.style.pointerEvents = 'auto';
-                      
+
                       setTimeout(() => {
                         try {
                           frame.focus();

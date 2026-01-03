@@ -13,7 +13,7 @@ function createProxyFrame(tabId, container) {
   frame.setAttribute('scrolling', 'yes');
   frame.setAttribute('allowtransparency', 'true');
   frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
-  
+
   container.appendChild(frame);
 
   frame.classList.add('loading');
@@ -36,7 +36,7 @@ function createProxyFrame(tabId, container) {
           }
           window.startIframeNavigationMonitor(frame, tabId);
         }
-        
+
         if (frameWindow.document && frameWindow.document.body) {
           frameWindow.document.body.style.overflow = 'auto';
           frameWindow.document.documentElement.style.overflow = 'auto';
@@ -47,7 +47,7 @@ function createProxyFrame(tabId, container) {
   };
 
   frame.onload = defaultOnload;
-  
+
   const ensureScrollable = () => {
     try {
       if (frame.contentWindow && frame.contentWindow.document) {
@@ -62,7 +62,7 @@ function createProxyFrame(tabId, container) {
           doc.documentElement.style.overflowY = 'auto';
           doc.documentElement.style.overflowX = 'auto';
         }
-        
+
         let styleEl = doc.getElementById('_glint-scroll-fix');
         if (!styleEl) {
           styleEl = doc.createElement('style');
@@ -81,18 +81,18 @@ function createProxyFrame(tabId, container) {
     } catch (e) {
     }
   };
-  
+
   frame.addEventListener('load', ensureScrollable);
-  
+
   const checkInterval = setInterval(() => {
     if (frame.contentWindow && frame.contentWindow.document && frame.contentWindow.document.body) {
       ensureScrollable();
       clearInterval(checkInterval);
     }
   }, 100);
-  
+
   setTimeout(() => clearInterval(checkInterval), 5000);
-  
+
   frame.style.overflow = 'auto';
   frame.style.overflowY = 'auto';
   frame.style.overflowX = 'auto';

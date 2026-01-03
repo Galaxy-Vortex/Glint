@@ -2,17 +2,17 @@ function createTabElement(tabId, tabData) {
   const newTabElement = document.createElement('div');
   newTabElement.className = 'tab';
   newTabElement.setAttribute('data-tab-id', tabId);
-  
-  const faviconHtml = tabData.favicon 
+
+  const faviconHtml = tabData.favicon
     ? `<img src="${tabData.favicon}" alt="Favicon" class="tab-favicon">`
     : `<div class="tab-favicon-placeholder"><img src="images/logo.png" alt="Glint Logo" class="tab-logo"></div>`;
-  
+
   newTabElement.innerHTML = `
     ${faviconHtml}
     <span class="tab-title">${tabData.title || 'New Tab'}</span>
     <span class="tab-close"><i class="fas fa-times"></i></span>
   `;
-  
+
   return newTabElement;
 }
 
@@ -29,7 +29,7 @@ function createNewTab() {
     isNewTab: true,
     isHistoryNavigation: false
   };
-  
+
   window.initTabHistory(tabId);
 
   const tabsContainer = document.querySelector('.tabs');
@@ -41,9 +41,9 @@ function createNewTab() {
 
   window.setActiveTab(tabId);
   window.updateTabDividers();
-  
+
   window.saveTabsToStorage(true);
-  
+
   return tabId;
 }
 
@@ -101,7 +101,7 @@ function closeTab(tabId) {
   } else if (isActive && nextActiveTabId) {
     window.setActiveTab(nextActiveTabId);
   }
-  
+
   window.saveTabsToStorage(true);
 }
 
@@ -126,7 +126,7 @@ function setActiveTab(tabId) {
   });
 
   const browserContent = document.querySelector('.browser-content');
-  
+
   if (tabs[tabId] && tabs[tabId].isNewTab) {
     newTabPage.style.display = 'flex';
 
@@ -140,7 +140,7 @@ function setActiveTab(tabId) {
       proxyFramesContainer.style.pointerEvents = 'none';
       proxyFramesContainer.style.zIndex = '1';
     }
-    
+
     if (browserContent) {
       browserContent.classList.remove('frame-active');
     }
@@ -158,11 +158,11 @@ function setActiveTab(tabId) {
     document.querySelectorAll('.proxy-frame').forEach(frame => {
       const isActive = frame.id === `proxy-frame-${tabId}`;
       frame.style.display = isActive ? 'block' : 'none';
-      
+
       if (isActive) {
         frame.classList.add('visible');
         frame.style.pointerEvents = 'auto';
-        
+
         setTimeout(() => {
           try {
             frame.focus();
@@ -176,7 +176,7 @@ function setActiveTab(tabId) {
         frame.classList.remove('visible');
       }
     });
-    
+
     if (browserContent) {
       browserContent.classList.add('frame-active');
     }

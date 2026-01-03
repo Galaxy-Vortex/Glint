@@ -159,7 +159,7 @@
     height: 150px;
     padding: 18px;
   }
-  
+
   .reviews-grid {
     gap: 14px;
   }
@@ -171,9 +171,8 @@
     height: 140px;
     padding: 16px;
   }
-  
+
   .reviews-grid {
     gap: 12px;
   }
 }
-

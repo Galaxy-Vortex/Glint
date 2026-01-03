@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,15 +39,12 @@
   <script src="js/tabs/tab-dragging.js" defer=""></script>
   <script src="js/tabs/tab-management.js" defer=""></script>
   <script src="js/navigation/navigation.js" defer=""></script>
-  <script src="js/theme.js" defer=""></script>
   <script src="js/main.js" defer=""></script>
   <script src="js/search.js" defer=""></script>
   <script src="js/proxy-config.js" defer=""></script>
   <script src="js/options.js" defer=""></script>
-  <script src="js/notifications.js" defer=""></script>
   <script src="js/register-sw.js" defer=""></script>
   <script src="js/reviews-carousel.js" defer=""></script>
-  <script src="js/onboarding.js" defer=""></script>
   <!-- proxy deps -->
   <script src="baremux/index.js" defer=""></script>
   <script src="epoxy/index.js" defer=""></script>
@@ -85,9 +83,6 @@
         <input type="text" class="address-bar-input" placeholder="Search or enter a URL">
       </div>
       <div class="toolbar-actions">
-        <button class="action-btn notifications-btn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-        </button>
         <button class="action-btn menu-btn" aria-label="More options">
           <i class="fas fa-ellipsis-v"></i>
         </button>
@@ -266,80 +261,32 @@
   </div>
 
   <div class="options-dropdown" id="options-dropdown">
-    <div class="dropdown-section cloak-section">
-      <div class="cloak-btn" id="tab-cloak-btn">
-        <i class="fas fa-user-secret"></i>
-        <span>Tab Cloak</span>
-      </div>
+    <div class="menu-item" id="tab-cloak-btn">
+      Tab Cloak
     </div>
 
-    <div class="dropdown-section-header">
-      <i class="fas fa-search"></i>
-      <span>Search Engine</span>
+    <div class="menu-divider"></div>
+
+    <div class="menu-label">Search</div>
+    <div class="menu-item search-option" data-engine="google">
+      <input type="radio" id="dropdown-google" name="dropdown-search-engine" value="google">
+      <label for="dropdown-google">Google</label>
     </div>
-    <div class="dropdown-section">
-      <div class="search-engine-options">
-        <div class="dropdown-item search-option" data-engine="google">
-          <input type="radio" id="dropdown-google" name="dropdown-search-engine" value="google">
-          <label for="dropdown-google">Google</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="bing">
-          <input type="radio" id="dropdown-bing" name="dropdown-search-engine" value="bing">
-          <label for="dropdown-bing">Bing</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="duckduckgo">
-          <input type="radio" id="dropdown-duckduckgo" name="dropdown-search-engine" value="duckduckgo">
-          <label for="dropdown-duckduckgo">DuckDuckGo</label>
-        </div>
-        <div class="dropdown-item search-option" data-engine="yahoo">
-          <input type="radio" id="dropdown-yahoo" name="dropdown-search-engine" value="yahoo">
-          <label for="dropdown-yahoo">Yahoo</label>
-        </div>
-      </div>
+    <div class="menu-item search-option" data-engine="bing">
+      <input type="radio" id="dropdown-bing" name="dropdown-search-engine" value="bing">
+      <label for="dropdown-bing">Bing</label>
+    </div>
+    <div class="menu-item search-option" data-engine="duckduckgo">
+      <input type="radio" id="dropdown-duckduckgo" name="dropdown-search-engine" value="duckduckgo">
+      <label for="dropdown-duckduckgo">DuckDuckGo</label>
+    </div>
+    <div class="menu-item search-option" data-engine="yahoo">
+      <input type="radio" id="dropdown-yahoo" name="dropdown-search-engine" value="yahoo">
+      <label for="dropdown-yahoo">Yahoo</label>
     </div>
 
-    <div class="dropdown-section-header">
-      <i class="fas fa-palette"></i>
-      <span>Theme</span>
-    </div>
-    <div class="dropdown-section">
-      <div class="theme-options" id="theme-options-container">
-      </div>
-    </div>
-
-    <div class="dropdown-section-header">
-      <i class="fas fa-server"></i>
-      <span>Proxy</span>
-    </div>
-
-    <div class="dropdown-section wisp-input-container">
-      <label for="input-wisp">Wisp URL:</label>
-      <input type="text" id="input-wisp" name="input-wisp" placeholder="wss://example.com/wisp/">
-    </div>
   </div>
 
-  <div class="notifications-panel" id="notifications-panel">
-    <div class="notifications-header">
-      <h2>Notifications</h2>
-      <button class="notifications-close"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="notifications-list">
-      <div class="notification-card">
-        <div class="notification-content">
-          <h3 class="notification-title">New Onboarding & Themes</h3>
-          <p class="notification-desc">fresh new onboarding and themes!</p>
-          <span class="notification-date">December 8, 2025</span>
-        </div>
-      </div>
-      <div class="notification-card">
-        <div class="notification-content">
-          <h3 class="notification-title">Glint v2 Release</h3>
-          <p class="notification-desc">Major update with new themes, tab cloaking, notification system, and tons of improvements!</p>
-          <span class="notification-date">December 7, 2025</span>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>

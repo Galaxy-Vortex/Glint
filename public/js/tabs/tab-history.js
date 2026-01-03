@@ -5,21 +5,21 @@ function addToHistory(tabId, url) {
     tabHistory[tabId] = [];
     tabHistory[tabId].historyIndex = -1;
   }
-  
+
   const history = tabHistory[tabId];
   const originalUrl = window.getOriginalUrl(url);
-  
+
   if (history.length > 0 && history[history.historyIndex] === originalUrl) {
     return;
   }
-  
+
   if (history.historyIndex < history.length - 1) {
     history.splice(history.historyIndex + 1);
   }
-  
+
   history.push(originalUrl);
   history.historyIndex = history.length - 1;
-  
+
   if (history.length > 50) {
     history.shift();
     history.historyIndex--;
